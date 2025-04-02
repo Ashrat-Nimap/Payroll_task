@@ -1,0 +1,36 @@
+<div class="d-flex row">
+    <!-- <div class="Image-box col-md-6">
+        <img src="../../assets/Images/LoginImg.jpg" alt="" srcset="" width="300px" height="300px">
+    </div> -->
+    <div class="login-box col-md-6">
+        <div class="">
+            <h3 class="text-center">Login</h3>
+        </div>
+        <div class="">
+            <form [formGroup]="loginfrom" (ngSubmit)="onlogin()">
+                <div class="mb-3">
+                    <mat-form-field class="example-full-width">
+                        <mat-label>Enter Your Email/ Mobile No</mat-label>
+                        <input matInput placeholder="Email" formControlName="username" required>
+                        <mat-error>Email required</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="mb-3">
+                    <mat-form-field class="example-full-width">
+                        <mat-label>Enter The Password</mat-label>
+                        <input matInput placeholder="Password" [type]="hide? 'password' : 'text'" formControlName="password" required>
+                        <mat-icon style="margin-top: 1rem;" (click)="hide = !hide" matSuffix>
+                            {{ hide ? 'visibility_off' : 'visibility' }}
+                        </mat-icon>
+                        <mat-error>Password required</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="button">
+                    <button mat-raised-button [disabled]="isloading" type="submit" class="loginbtn">
+                        <mat-spinner class="spinner" [diameter]="20" style="float: right;" *ngIf=" isloading"></mat-spinner>
+                        Sign in</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
