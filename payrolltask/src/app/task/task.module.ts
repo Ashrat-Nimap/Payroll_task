@@ -9,6 +9,15 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTabsModule} from '@angular/material/tabs';
 import { RouterModule, Routes } from '@angular/router';
 import {MatButtonModule} from '@angular/material/button';
+import { AddTaskDialogComponent } from './add-task-dialog/add-task-dialog.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatMenuModule} from '@angular/material/menu';
+import {FormsModule} from '@angular/forms';
+import {provideNativeDateAdapter} from '@angular/material/core';
 
 
 const routes : Routes =[
@@ -24,15 +33,24 @@ const routes : Routes =[
     CcComponent,
     AssigntomeComponent,
     ArchivelistComponent,
-    MytaskComponent
+    MytaskComponent,
+    AddTaskDialogComponent
   ],
   imports: [
     CommonModule,
     MatToolbarModule,
     MatTabsModule,
     MatButtonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatMenuModule,
+    MatDatepickerModule,
     RouterModule.forChild(routes)
   ],
+  providers : [provideNativeDateAdapter()],
   exports: [RouterModule]
 })
 export class TaskModule { }

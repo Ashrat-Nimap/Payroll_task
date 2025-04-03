@@ -1,10 +1,16 @@
 <mat-toolbar style="background-color: #820082;">
     <span style="color: white;">My Task</span>
     <span class="example-spacer"></span>
-    <span style="color: white;">{{Username}}</span>
+    <span style="color: white;"  [matMenuTriggerFor]="belowMenu">{{Username}}</span>
 </mat-toolbar>
+<mat-menu #belowMenu="matMenu" yPosition="below">
+    <div class="">
+        <button mat-raised-button style="background-color: #820082;color: white;">Sign Out</button>
+    </div>
+</mat-menu>
+  
 <div class="add-task-btn p-2">
-    <button mat-raised-button style="border-radius: 5px; color: white;background-color: #820082;">Add Task</button>
+    <button mat-raised-button style="border-radius: 5px; color: white;background-color: #820082;" (click)="opentaskdialog()">Add Task</button>
 </div>
 <mat-tab-group>
     <mat-tab label="My Task">

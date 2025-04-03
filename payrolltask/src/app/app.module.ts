@@ -19,12 +19,14 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTabsModule} from '@angular/material/tabs';
 import { TaskModule } from './task/task.module';
+import { NumberOnlyDirective } from './directives/number-only.directive';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
+    NumberOnlyDirective,
   ],
   imports: [
     BrowserModule,
