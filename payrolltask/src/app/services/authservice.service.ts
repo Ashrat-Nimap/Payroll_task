@@ -8,16 +8,16 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class AuthserviceService {
   constructor(private http : HttpClient) { }
 
-  login(data:Partial<{
+  login(
     username:any,
     password:any
-  }>) : Observable<any>{
-    return this.http.post('api/Account/authenticate',data)
+  ) : Observable<any>{
+    return this.http.post('api/Account/authenticate',{username,password})
   }
 
-  logout() : Observable<any>{
-     return this.http.delete('api/Account/Logout')
-  }
+  // logout() : Observable<any>{
+  //    return this.http.post('api/Account/Logout')
+  // }
 
   isLogged(){
     return sessionStorage.getItem("token") !== null;

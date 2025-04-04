@@ -22,14 +22,15 @@ export class LoginComponent {
   
   onlogin(){
     this.isloading = true;
-    this.authService.login(this.loginfrom.value)
+    const {username , password} = this.loginfrom.value;
+    this.authService.login(username,password)
     .subscribe({
       next : (res) => {
         if(res.success === true){
           debugger
           this.isloading = false
           this.router.navigate(['/mytask']);
-          sessionStorage.setItem("token",res.referralToken);
+          sessionStorage.setItem("token",btoa(`${username}`+ ':' + `${password}`));
           sessionStorage.setItem("username",res.userDetail?.data?.Name);
           this.toastr.showSuccess("Login Successfull");
         }else{

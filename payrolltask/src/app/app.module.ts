@@ -10,7 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatButtonModule} from '@angular/material/button';
@@ -20,6 +20,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTabsModule} from '@angular/material/tabs';
 import { TaskModule } from './task/task.module';
 import { NumberOnlyDirective } from './directives/number-only.directive';
+import { authInterceptorInterceptor } from './Interceptor/auth-interceptor.interceptor';
 
 
 @NgModule({
@@ -51,7 +52,7 @@ import { NumberOnlyDirective } from './directives/number-only.directive';
   providers: [
     provideClientHydration(),
     provideAnimationsAsync(),
-    provideHttpClient(withFetch())
+    provideHttpClient(withFetch(),withInterceptors([authInterceptorInterceptor])),
   ],
   bootstrap: [AppComponent]
 })

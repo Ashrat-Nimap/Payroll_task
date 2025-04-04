@@ -3,6 +3,7 @@ import { AuthserviceService } from '../../services/authservice.service';
 import { Observable } from 'rxjs';
 import { AddTaskDialogComponent } from '../add-task-dialog/add-task-dialog.component';
 import { MatDialog,MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-mytask',
@@ -15,6 +16,7 @@ export class MytaskComponent {
   constructor(
     private authService: AuthserviceService,
     private dialog: MatDialog,
+    private router : Router
   ){}
 
   ngOnInit(): void {
@@ -27,6 +29,12 @@ export class MytaskComponent {
       width: '1100px',
       panelClass: 'dialog-container'
     });
+  }
+
+  signout(){
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('username');
+    this.router.navigate(['/login']);
   }
  
 }
