@@ -18,6 +18,8 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatMenuModule} from '@angular/material/menu';
 import {FormsModule} from '@angular/forms';
 import {provideNativeDateAdapter} from '@angular/material/core';
+import {MatTableModule} from '@angular/material/table';
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 
 const routes : Routes =[
@@ -48,6 +50,8 @@ const routes : Routes =[
     MatSelectModule,
     MatMenuModule,
     MatDatepickerModule,
+    MatTableModule,
+    MatPaginatorModule,
     RouterModule.forChild(routes)
   ],
   providers : [provideNativeDateAdapter()],

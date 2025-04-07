@@ -32,8 +32,8 @@
                         <div class="col-lg-6">
                             <mat-form-field class="form-input" >
                                 <mat-select placeholder="Lead/Customer Name" formControlName="LeadId">
-                                    <mat-option [value]="">
-
+                                    <mat-option *ngFor="let lead of leadlist" [value]="lead.Id">
+                                        {{lead.LeadName}}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
@@ -43,7 +43,7 @@
                                 <mat-label>Select Due Date</mat-label>
                                 <input matInput [matDatepicker]="picker" formControlName="TaskEndDateDisplay">
                                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                                <mat-datepicker #picker></mat-datepicker>
+                                <mat-datepicker #picker ></mat-datepicker>
                             </mat-form-field>
                         </div>
                         <div class="col-lg-6">

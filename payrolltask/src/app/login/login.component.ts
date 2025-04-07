@@ -32,6 +32,7 @@ export class LoginComponent {
           this.router.navigate(['/mytask']);
           sessionStorage.setItem("token",btoa(`${username}`+ ':' + `${password}`));
           sessionStorage.setItem("username",res.userDetail?.data?.Name);
+          sessionStorage.setItem("referraltoken",res.referralToken);
           this.toastr.showSuccess("Login Successfull");
         }else{
           this.toastr.showError(res.errormessage);
