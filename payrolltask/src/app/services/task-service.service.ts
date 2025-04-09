@@ -78,6 +78,10 @@ export class TaskServiceService {
     return this.http.post('api/CRM/Leads',params)
   }
 
+  getMemberList() : Observable<any>{
+    return this.http.get('api/CompanyMembers')
+  }
+
   assignTask(taskdata: any): Observable<any> {
     return this.http.post('api/Task/AssignTask', taskdata)
   }

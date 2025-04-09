@@ -47,7 +47,10 @@ export class taskdatasource extends DataSource<TaskModel> {
         this.loadingSubject.next(true);
         this.taskService.cc(from, to, title, userId, isarchive, StatusIds, priority, userIds)
             .pipe(map(
-                (res: any) => res.data.TaskList
+                res =>{
+                    this.paginatorTotal.next(res.data.TotalCount);
+                    return res.data.TaskList;
+                }
             ),
                 catchError(() => of([])),
                 finalize(() => {
@@ -64,9 +67,10 @@ export class taskdatasource extends DataSource<TaskModel> {
     loadAssingByMeTask(from: number, to: number, title: string, userId: any, isarchive: boolean, userIds: any, StatusIds: any, FromDate: any, ToDate: any, sortbyduedate: any) {
         this.loadingSubject.next(true);
         this.taskService.assignByMeTask(from, to, title, userId, isarchive, userIds, FromDate, ToDate, StatusIds, sortbyduedate).pipe(map(
-            (res: any) =>
-                res.data.TaskList
-            // this.paginatorCount$ = res.TotalCount
+                res =>{
+                    this.paginatorTotal.next(res.data.TotalCount);
+                    return res.data.TaskList;
+                }
         ),
             catchError(() => of([])),
             finalize(() => {
@@ -84,7 +88,10 @@ export class taskdatasource extends DataSource<TaskModel> {
         this.loadingSubject.next(true);
         this.taskService.archiveList(from,to,isarchive,title,userId,userIds)
         .pipe(map
-            ((res: any) => res.data.TaskList),
+            ( res =>{
+                this.paginatorTotal.next(res.data.TotalCount);
+                return res.data.TaskList;
+            }),
             catchError(() => of([])),
             finalize(() =>{
                 this.loadingSubject.next(false);

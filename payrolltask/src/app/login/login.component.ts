@@ -27,7 +27,6 @@ export class LoginComponent {
     .subscribe({
       next : (res) => {
         if(res.success === true){
-          debugger
           this.isloading = false
           this.router.navigate(['/mytask']);
           sessionStorage.setItem("token",btoa(`${username}`+ ':' + `${password}`));

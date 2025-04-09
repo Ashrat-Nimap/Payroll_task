@@ -22,5 +22,26 @@ export class AssigntomeComponent {
       this.dataSource = new taskdatasource(this.taskService);
       this.dataSource.loadAssingByMeTask(1,10,'','',false,[],'','','','')
     }
+
+    ngAfterViewInit(): void {
+      this.paginator.page.subscribe(() => {
+        const from = (this.paginator.pageIndex * this.paginator.pageSize ) + 1;
+        const to = (this.paginator.pageIndex+1) * this.paginator.pageSize;
+    
+        this.dataSource.loadTask(
+          from,
+          to,
+          '',               // title
+          this.userId,      // userId
+          false,            // isArchive
+          '', '', '', '', '', '', ''
+        );
+      });
+    
+      // Link paginator total count
+      this.dataSource.paginatorCount$.subscribe(total => {
+        this.paginator.length = total;
+      });
+    }
   
 }

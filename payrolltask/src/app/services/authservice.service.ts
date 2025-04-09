@@ -24,7 +24,7 @@ export class AuthserviceService {
   }
 
   getTokenByUserId() : any{
-    const token = localStorage.getItem('referraltoken'); // Or use directly if you have it
+    const token = localStorage.getItem('referraltoken'); 
     if (!token) return null;
 
     try {
