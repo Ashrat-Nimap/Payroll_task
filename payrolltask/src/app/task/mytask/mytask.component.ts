@@ -25,7 +25,6 @@ export class MytaskComponent {
 
   opentaskdialog(){
     const dialogRef = this.dialog.open(AddTaskDialogComponent, {
-      height : '500px',
       width: '1100px',
       panelClass: 'dialog-container'
     });

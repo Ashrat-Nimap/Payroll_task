@@ -20,7 +20,7 @@ export class AuthserviceService {
   // }
 
   isLogged(){
-    return sessionStorage.getItem("token") !== null;
+    return (typeof window !== 'undefined' && !!sessionStorage.getItem("token") !== null);
   }
 
   getTokenByUserId() : any{

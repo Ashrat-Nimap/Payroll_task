@@ -1,151 +1,167 @@
 <div class="">
-    <div class="dialog-head">
-        <h4>Add Task</h4>
-    </div>
-    <div class="content-group">
-        <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedTabChange)="onTabChange($event)">
-            <mat-tab label="Assign to Others">
-                <ng-template matTabContent>
-                   <form [formGroup]="addtaskform">
-                    <div class="row">
-                        <div class="col-lg-12 mb-3">
-                            <mat-form-field class="form-input">
-                                <mat-label>Title</mat-label>
-                                <input matInput formControlName="Title" required>
-                                <mat-error>title required</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-12 mb-3">
-                            <mat-form-field class="form-input">
-                                <mat-label>Description</mat-label>
-                                <textarea matInput formControlName="Description" required></textarea>
-                                <mat-error>description required</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-12 mb-3">
-                            <mat-form-field class="form-input">
-                                <mat-label>Attach File</mat-label>
-                                <input matInput formControlName="Image"  (click)="triggerFileInput($event)" [value]="fileName">
-                                <input type="file" id="fileInput" (change)="onFileChange($event)" hidden>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-6">
-                            <mat-form-field class="form-input" >
-                                <mat-select placeholder="Lead/Customer Name" formControlName="LeadId">
-                                    <mat-option *ngFor="let lead of leadlist" [value]="lead.Id">
-                                        {{lead.LeadName}}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-6">
-                            <mat-form-field>
-                                <mat-label>Select Due Date</mat-label>
-                                <input matInput [matDatepicker]="picker" formControlName="TaskEndDateDisplay" [min]="currentDate">
-                                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                                <mat-datepicker #picker ></mat-datepicker>
-                                <input matInput formControlName="TaskEndDate" hidden>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-6">
-                            <mat-form-field class="form-input" >
-                                <mat-select placeholder="Select Priority" formControlName="Priority">
-                                    <mat-option value="High">High</mat-option>
-                                    <mat-option value="Low">Low</mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-6">
-                            <mat-form-field class="form-input">
-                                <mat-select placeholder="Add Users" formControlName="UserIds" multiple="">
-                                    <mat-option *ngFor="let member of memberlist" [value]="member.UserId">
-                                        {{member.Name}}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-lg-6">
-                            <mat-form-field class="form-input">
-                                <mat-select placeholder="Add CC Members" formControlName="TaskOwners" multiple="">
-                                    <mat-option *ngFor="let owner of memberlist" [value]="owner.UserId">
-                                        {{owner.Name}}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-                    </div>
-                   </form> 
-                </ng-template>
-            </mat-tab>
-            <mat-tab label="Assign to Me">
-                <ng-template matTabContent>
-                    <form [formGroup]="addtaskform">
-                     <div class="row">
-                         <div class="col-lg-12 mb-3">
-                             <mat-form-field class="form-input">
-                                 <mat-label>Title</mat-label>
-                                 <input matInput formControlName="Title" required>
-                                 <mat-error>title required</mat-error>
-                             </mat-form-field>
-                         </div>
-                         <div class="col-lg-12 mb-3">
-                             <mat-form-field class="form-input">
-                                 <mat-label>Description</mat-label>
-                                 <textarea matInput formControlName="Description" required></textarea>
-                                 <mat-error>description required</mat-error>
-                             </mat-form-field>
-                         </div>
-                         <div class="col-lg-12 mb-3">
-                            <mat-form-field class="form-input">
-                                <mat-label>Attach File</mat-label>
-                                <input matInput formControlName="Image"  (click)="triggerFileInput($event)" [value]="fileName">
-                                <input type="file" accept=".jpeg .jpg" id="fileInput" (change)="onFileChange($event)" hidden>
-                            </mat-form-field>
-                         </div>
-                         <div class="col-lg-6">
-                             <mat-form-field class="form-input" >
-                                 <mat-select placeholder="Lead/Customer Name" formControlName="LeadId">
-                                     <mat-option *ngFor="let lead of leadlist" [value]="lead.Id">
-                                         {{lead.LeadName}}
-                                     </mat-option>
-                                 </mat-select>
-                             </mat-form-field>
-                         </div>
-                         <div class="col-lg-6">
-                             <mat-form-field>
-                                 <mat-label>Select Due Date</mat-label>
-                                 <input matInput [matDatepicker]="picker" formControlName="TaskEndDateDisplay" [min]="currentDate">
-                                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                                 <mat-datepicker #picker ></mat-datepicker>
-                                 <input matInput formControlName="TaskEndDate" hidden>
-                             </mat-form-field>
-                         </div>
-                         <div class="col-lg-6">
-                             <mat-form-field class="form-input" >
-                                 <mat-select placeholder="Select Priority" formControlName="Priority">
-                                     <mat-option value="High">High</mat-option>
-                                     <mat-option value="Low">Low</mat-option>
-                                 </mat-select>
-                             </mat-form-field>
-                         </div>
-                         <div class="col-lg-6">
-                             <mat-form-field class="form-input">
-                                 <mat-select placeholder="Add CC Members" formControlName="TaskOwners" multiple="">
-                                     <mat-option *ngFor="let owner of memberlist" [value]="owner.UserId">
-                                         {{owner.Name}}
-                                     </mat-option>
-                                 </mat-select>
-                             </mat-form-field>
-                         </div>
-                     </div>
-                    </form> 
-                 </ng-template>
-            </mat-tab>
-        </mat-tab-group>
-    </div>
-    <div class="btn-group d-flex justify-content-end" style="gap: 3px;">
+        <h4 mat-dialog-title>Add Task</h4>
+    <mat-dialog-content>
+        <div class="content-group">
+            <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedTabChange)="onTabChange($event)">
+                <mat-tab label="Assign to Others">
+                    <ng-template matTabContent>
+                        <form [formGroup]="addtaskform">
+                            <div class="row">
+                                <div class="col-lg-12 mb-3">
+                                    <mat-form-field class="form-input">
+                                        <mat-label>Title</mat-label>
+                                        <input matInput formControlName="Title" required>
+                                        <mat-error
+                                            *ngIf="addtaskform.get('Title')?.invalid && (addtaskform.get('Title')?.touched || addtaskform.get('Title')?.dirty)">
+                                            <ng-container *ngIf="addtaskform.get('Title')?.hasError('required')">Please enter the title</ng-container>
+                                            <ng-container *ngIf="addtaskform.get('Title')?.hasError('pattern')">Only alphabetic characters are allowed</ng-container>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-lg-12 mb-3">
+                                    <mat-form-field class="form-input">
+                                        <mat-label>Description</mat-label>
+                                        <textarea matInput formControlName="Description" required></textarea>
+                                        <mat-error>description required</mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-lg-12 mb-3">
+                                    <mat-form-field class="form-input">
+                                        <mat-label>Attach File</mat-label>
+                                        <input matInput formControlName="Image" (click)="triggerFileInput($event)"
+                                            [value]="fileName">
+                                        <input type="file" id="fileInput" (change)="onFileChange($event)" hidden>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-lg-6">
+                                    <mat-form-field class="form-input">
+                                        <mat-select placeholder="Lead/Customer Name" formControlName="LeadId">
+                                            <mat-option *ngFor="let lead of leadlist" [value]="lead.Id">
+                                                {{lead.LeadName}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-lg-6">
+                                    <mat-form-field>
+                                        <mat-label>Select Due Date</mat-label>
+                                        <input matInput [matDatepicker]="picker" formControlName="TaskEndDateDisplay"
+                                            [min]="currentDate">
+                                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker></mat-datepicker>
+                                        <input matInput formControlName="TaskEndDate" hidden>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-lg-6">
+                                    <mat-form-field class="form-input">
+                                        <mat-select placeholder="Select Priority" formControlName="Priority">
+                                            <mat-option value="High">High</mat-option>
+                                            <mat-option value="Low">Low</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-lg-6">
+                                    <mat-form-field class="form-input">
+                                        <mat-select placeholder="Add Users" formControlName="UserIds" multiple="">
+                                            <mat-option *ngFor="let member of memberlist" [value]="member.UserId">
+                                                {{member.Name}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-lg-6">
+                                    <mat-form-field class="form-input">
+                                        <mat-select placeholder="Add CC Members" formControlName="TaskOwners"
+                                            multiple="">
+                                            <mat-option *ngFor="let owner of memberlist" [value]="owner.UserId">
+                                                {{owner.Name}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </form>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab label="Assign to Me">
+                    <ng-template matTabContent>
+                        <form [formGroup]="addtaskform">
+                            <div class="row">
+                                <div class="col-lg-12 mb-3">
+                                    <mat-form-field class="form-input">
+                                        <mat-label>Title</mat-label>
+                                        <input matInput formControlName="Title" required>
+                                        <mat-error *ngIf="addtaskform.get('Title')?.invalid && (addtaskform.get('Title')?.touched || addtaskform.get('Title')?.dirty)">
+                                            <ng-container *ngIf="addtaskform.get('Title')?.hasError('required')">Please enter the title</ng-container>
+                                            <ng-container *ngIf="addtaskform.get('Title')?.hasError('pattern')">Only alphabetic characters are allowed</ng-container>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-lg-12 mb-3">
+                                    <mat-form-field class="form-input">
+                                        <mat-label>Description</mat-label>
+                                        <textarea matInput formControlName="Description" required></textarea>
+                                        <mat-error>description required</mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-lg-12 mb-3">
+                                    <mat-form-field class="form-input">
+                                        <mat-label>Attach File</mat-label>
+                                        <input matInput formControlName="Image" (click)="triggerFileInput($event)"
+                                            [value]="fileName">
+                                        <input type="file" accept=".jpeg .jpg" id="fileInput"
+                                            (change)="onFileChange($event)" hidden>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-lg-6">
+                                    <mat-form-field class="form-input">
+                                        <mat-select placeholder="Lead/Customer Name" formControlName="LeadId">
+                                            <mat-option *ngFor="let lead of leadlist" [value]="lead.Id">
+                                                {{lead.LeadName}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-lg-6">
+                                    <mat-form-field>
+                                        <mat-label>Select Due Date</mat-label>
+                                        <input matInput [matDatepicker]="picker" formControlName="TaskEndDateDisplay"
+                                            [min]="currentDate">
+                                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker></mat-datepicker>
+                                        <input matInput formControlName="TaskEndDate" hidden>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-lg-6">
+                                    <mat-form-field class="form-input">
+                                        <mat-select placeholder="Select Priority" formControlName="Priority">
+                                            <mat-option value="High">High</mat-option>
+                                            <mat-option value="Low">Low</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-lg-6">
+                                    <mat-form-field class="form-input">
+                                        <mat-select placeholder="Add CC Members" formControlName="TaskOwners"
+                                            multiple="">
+                                            <mat-option *ngFor="let owner of memberlist" [value]="owner.UserId">
+                                                {{owner.Name}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </form>
+                    </ng-template>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions>
             <button mat-raised-button color="primary" style="border-radius: 5px;" (click)="onNoClick()">Close</button>
-            <button mat-raised-button style="background-color: #820082;color: white;border-radius: 5px;"(click)="onSubmit()">Add</button>
-    </div>
+            <button mat-raised-button style="background-color: #820082;color: white;border-radius: 5px;"
+                (click)="onSubmit()">Add</button>
+    </mat-dialog-actions>
 
 </div>

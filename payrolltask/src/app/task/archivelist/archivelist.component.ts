@@ -3,6 +3,10 @@ import { MatPaginator } from '@angular/material/paginator';
 import { taskdatasource } from '../../datasource/taskdatasource';
 import { AuthserviceService } from '../../services/authservice.service';
 import { TaskServiceService } from '../../services/task-service.service';
+import { DeleteEntityDialogComponent } from '../delete-entity-dialog/delete-entity-dialog.component';
+import { map } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-archivelist',
@@ -12,10 +16,10 @@ import { TaskServiceService } from '../../services/task-service.service';
 export class ArchivelistComponent {
   dataSource! : taskdatasource;
     userId! : any;
-    displayedColumns: string[] = ['Title', 'Customer Name', 'Assigned By','Assigned Date','Due Date','Priority','Status'];
+    displayedColumns: string[] = ['Title', 'Customer Name', 'Assigned By','Assigned Date','Due Date','Priority','Status','Actions'];
     @ViewChild(MatPaginator) paginator!: MatPaginator ;
   
-    constructor(private taskService : TaskServiceService,private authService : AuthserviceService){}
+    constructor(private taskService : TaskServiceService,private authService : AuthserviceService,private dialog: MatDialog, private toastr: ToastrService){}
   
     ngOnInit(): void {
       this.userId = this.authService.getUserId();
@@ -43,4 +47,25 @@ export class ArchivelistComponent {
         this.paginator.length = total;
       });
     }
+
+    unarchive(taskId : number){
+        const dialogRef = this.dialog.open(DeleteEntityDialogComponent,{
+          width : '200px',
+          data : {
+            title: 'UNARCHIVE TASK',
+            message : 'Do you want to archive this Task?'
+          }
+        })
+        dialogRef.afterClosed().subscribe(res => {
+          if(!res) return 
+          this.taskService.archive(taskId,false).pipe(
+            map(res => {
+              if(res.Status === 200){
+                this.toastr.success("archived task successfully");
+                this.dataSource.loadArchiveList(1,10,true,'',this.userId,[]);
+              }
+            })
+          ).subscribe();
+        })
+      }
 }

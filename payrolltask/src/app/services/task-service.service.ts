@@ -85,4 +85,16 @@ export class TaskServiceService {
   assignTask(taskdata: any): Observable<any> {
     return this.http.post('api/Task/AssignTask', taskdata)
   }
+
+  deleteTask(taskId : number) : Observable<any>{
+    return this.http.get('api/Task/DeleteTask?taskId='+taskId)
+  }
+
+  archive(taskId : number,isArchive : boolean) : Observable<any>{
+    const params = {
+      TaskId : taskId,
+      IsArchive : isArchive
+    }
+    return this.http.post('api/Task/Archive',params);
+  }
 }

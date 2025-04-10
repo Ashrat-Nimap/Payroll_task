@@ -20,6 +20,11 @@ import {FormsModule} from '@angular/forms';
 import {provideNativeDateAdapter} from '@angular/material/core';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import { MatIconModule } from '@angular/material/icon';
+import { DeleteEntityDialogComponent } from './delete-entity-dialog/delete-entity-dialog.component';
+import { MatDialogContent, MatDialogActions,MatDialogTitle } from '@angular/material/dialog';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 const routes : Routes =[
@@ -36,7 +41,8 @@ const routes : Routes =[
     AssigntomeComponent,
     ArchivelistComponent,
     MytaskComponent,
-    AddTaskDialogComponent
+    AddTaskDialogComponent,
+    DeleteEntityDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -52,6 +58,12 @@ const routes : Routes =[
     MatDatepickerModule,
     MatTableModule,
     MatPaginatorModule,
+    MatIconModule,
+    MatCheckboxModule,
+    MatDialogModule,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogTitle,
     RouterModule.forChild(routes)
   ],
   providers : [provideNativeDateAdapter()],

@@ -8,20 +8,23 @@ import { AuthserviceService } from '../../services/authservice.service';
 import { DatePipe } from '@angular/common';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 
+
 @Component({
   selector: 'app-add-task-dialog',
   templateUrl: './add-task-dialog.component.html',
   styleUrl: './add-task-dialog.component.scss',
-  providers : [DatePipe]
+  providers: [DatePipe]
 })
 export class AddTaskDialogComponent implements OnInit {
+  [x: string]: any;
   addtaskform: any = FormGroup
   selectedIndex: number = 0;
   UserId!: any;
   currentDate = new Date()
-  leadlist : any;
-  memberlist : any;
-  fileName : string = ''
+  leadlist: any;
+  newlist : any = []
+  memberlist: any;
+  fileName: string = ''
   constructor(
     public dialogRef: MatDialogRef<AddTaskDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -29,7 +32,7 @@ export class AddTaskDialogComponent implements OnInit {
     private taskService: TaskServiceService,
     private toastr: ToastrService,
     private authService: AuthserviceService,
-    private datepipe : DatePipe
+    private datepipe: DatePipe
   ) { }
 
   ngOnInit(): void {
@@ -42,11 +45,11 @@ export class AddTaskDialogComponent implements OnInit {
   forminit() {
     this.addtaskform = this.fb.group({
       AssignedBy: [this.UserId],
-      Title: ['', Validators.required],
+      Title: ['', [Validators.required, Validators.pattern("^[a-z A-Z]+$")]],
       Description: [''],
       Image: [''],
       LeadId: [''],
-      TaskEndDateDisplay : [''],
+      TaskEndDateDisplay: [''],
       TaskEndDate: [''],
       Priority: [''],
       UserIds: [[]],
@@ -54,14 +57,14 @@ export class AddTaskDialogComponent implements OnInit {
     })
   }
 
-  getLeadList(){
-    this.taskService.getLead().subscribe((res) =>{
+  getLeadList() {
+    this.taskService.getLead().subscribe((res) => {
       this.leadlist = res.data.Leads
     })
   }
 
-  getMemberList(){
-    this.taskService.getMemberList().subscribe((memlist)=>{
+  getMemberList() {
+    this.taskService.getMemberList().subscribe((memlist) => {
       this.memberlist = memlist.data.Members
     })
   }
@@ -74,15 +77,15 @@ export class AddTaskDialogComponent implements OnInit {
       reader.onload = (e: any) => {
         const image = new Image();
         image.src = e.target.result;
-  
+
         image.onload = () => {
           this.addtaskform.patchValue({
-            Image: e.target.result, 
+            Image: this.fileName,
           });
           // if (image.width <= 310 && image.height <= 325) {
           //   this.imageError = ''; 
 
-           
+
           //   this.previewImage = e.target.result; 
           // } else {
           //   this.imageError = 'Image must be between 310 and 325 pixels only';
@@ -93,8 +96,8 @@ export class AddTaskDialogComponent implements OnInit {
           // }
         };
       };
-  
-      reader.readAsDataURL(file); 
+
+      reader.readAsDataURL(file);
     } else {
       console.log('No file selected');
     }
@@ -111,7 +114,7 @@ export class AddTaskDialogComponent implements OnInit {
   onTabChange(event: MatTabChangeEvent) {
     this.selectedIndex = event.index;
 
-    if(event.index === 0){
+    if (event.index === 0) {
       this.addtaskform.reset();
       this.addtaskform.patchValue({
         AssignedBy: this.UserId,
@@ -120,44 +123,60 @@ export class AddTaskDialogComponent implements OnInit {
       this.addtaskform.reset();
       this.addtaskform.patchValue({
         AssignedBy: this.UserId,
-      }); 
+      });
     }
   }
 
-  onSubmit() {
-    const controls = this.addtaskform;
-
-    const formattedDate = this.datepipe.transform(
-      controls.get('TaskEndDateDisplay')?.value,
-      'd MMM yyyy hh:mm a'
+  leadSearch(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+  
+    if (!filterValue) {
+      // reset to original list if search is empty
+      this.newlist = [...this.leadlist];
+      return;
+    }
+  
+    this.newlist = this.leadlist.filter((tag: any) =>
+      tag.TagName.toLowerCase().includes(filterValue)
     );
+  }
 
-    this.addtaskform.patchValue({
-      TaskEndDate: formattedDate
-    });
+  onSubmit() {
+    if (this.addtaskform.valid) {
+      const controls = this.addtaskform;
 
-    if (this.selectedIndex === 0) {
-      this.taskService.assignTask(this.addtaskform.value).pipe(
-        map((res) => {
-          if (res) {
-            this.toastr.success("Task Added SuccessFully");
-          } else {
-            this.toastr.error("Something Went Wrong");
+      const formattedDate = this.datepipe.transform(
+        controls.get('TaskEndDateDisplay')?.value,
+        'd MMM yyyy hh:mm a'
+      );
+
+      this.addtaskform.patchValue({
+        TaskEndDate: formattedDate
+      });
+
+      if (this.selectedIndex === 0) {
+        this.taskService.assignTask(this.addtaskform.value).pipe(
+          map((res) => {
+            if (res) {
+              this.toastr.success("Task Added SuccessFully");
+            } else {
+              this.toastr.error("Something Went Wrong");
+            }
           }
-        }
-        )
-      ).subscribe();
-    }else if(this.selectedIndex === 1){
-      this.taskService.assignTask(this.addtaskform.value).pipe(
-        map((res) => {
-          if (res) {
-            this.toastr.success("Task Added SuccessFully");
-          } else {
-            this.toastr.error("Something Went Wrong");
+          )
+        ).subscribe();
+      } else if (this.selectedIndex === 1) {
+        this.taskService.assignTask(this.addtaskform.value).pipe(
+          map((res) => {
+            if (res) {
+              this.toastr.success("Task Added SuccessFully");
+            } else {
+              this.toastr.error("Something Went Wrong");
+            }
           }
-        }
-        )
-      ).subscribe();
+          )
+        ).subscribe();
+      }
     }
   }
 
