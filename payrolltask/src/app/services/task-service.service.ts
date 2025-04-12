@@ -69,14 +69,13 @@ export class TaskServiceService {
     return this.http.post('api/Task/UserTasksAssignedByMe', params)
   }
 
-  getLead() : Observable<any>{
-    const params = {
-      From : 1,
-      To : -1,
-      Text : ''
-    }
+  getLead(params : any) : Observable<any>{
     return this.http.post('api/CRM/Leads',params)
   }
+
+  // getMemberList(from:any, to:any, text:any) : Observable<any>{
+  //   return this.http.get('api/CompanyMembers?from=' +from +'&text=' +text+'&to='+to)
+  // }
 
   getMemberList() : Observable<any>{
     return this.http.get('api/CompanyMembers')

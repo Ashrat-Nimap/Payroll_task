@@ -16,7 +16,6 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
   providers: [DatePipe]
 })
 export class AddTaskDialogComponent implements OnInit {
-  [x: string]: any;
   addtaskform: any = FormGroup
   selectedIndex: number = 0;
   UserId!: any;
@@ -25,6 +24,12 @@ export class AddTaskDialogComponent implements OnInit {
   newlist : any = []
   memberlist: any;
   fileName: string = ''
+  filteredLeadList: any; 
+  leaddata = {
+    From : 1,
+    To : -1,
+    Text : ''
+  }
   constructor(
     public dialogRef: MatDialogRef<AddTaskDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -58,9 +63,12 @@ export class AddTaskDialogComponent implements OnInit {
   }
 
   getLeadList() {
-    this.taskService.getLead().subscribe((res) => {
-      this.leadlist = res.data.Leads
-    })
+    this.taskService.getLead(this.leaddata).pipe(
+      map((res : any) => {
+        this.leadlist = res.data.Leads;
+        this.filteredLeadList = this.leadlist;
+      })
+    ).subscribe();
   }
 
   getMemberList() {
@@ -111,35 +119,23 @@ export class AddTaskDialogComponent implements OnInit {
     }
   }
 
-  onTabChange(event: MatTabChangeEvent) {
-    this.selectedIndex = event.index;
-
-    if (event.index === 0) {
-      this.addtaskform.reset();
-      this.addtaskform.patchValue({
-        AssignedBy: this.UserId,
-      });
-    } else if (event.index === 1) {
-      this.addtaskform.reset();
-      this.addtaskform.patchValue({
-        AssignedBy: this.UserId,
-      });
-    }
+  tabChange() {
+   this.forminit()
   }
 
-  leadSearch(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+  // leadSearch(event: Event) {
+  //   const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
   
-    if (!filterValue) {
-      // reset to original list if search is empty
-      this.newlist = [...this.leadlist];
-      return;
-    }
+  //   if (!filterValue) {
+  //     // reset to original list if search is empty
+  //     this.newlist = [...this.leadlist];
+  //     return;
+  //   }
   
-    this.newlist = this.leadlist.filter((tag: any) =>
-      tag.TagName.toLowerCase().includes(filterValue)
-    );
-  }
+  //   this.newlist = this.leadlist.filter((tag: any) =>
+  //     tag.TagName.toLowerCase().includes(filterValue)
+  //   );
+  // }
 
   onSubmit() {
     if (this.addtaskform.valid) {
@@ -182,5 +178,15 @@ export class AddTaskDialogComponent implements OnInit {
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  searchLead(searchText: any) {
+    if (searchText && searchText.trim() !== '') {
+      this.filteredLeadList = this.leadlist.filter((lead: any) =>
+        lead.LeadName?.toString().toLowerCase().includes(searchText.toLowerCase())
+      );
+    } else {
+      this.filteredLeadList = this.leadlist;
+    }
   }
 }

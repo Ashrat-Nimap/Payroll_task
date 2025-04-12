@@ -2,7 +2,7 @@
         <h4 mat-dialog-title>Add Task</h4>
     <mat-dialog-content>
         <div class="content-group">
-            <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedTabChange)="onTabChange($event)">
+            <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedTabChange)="tabChange()">
                 <mat-tab label="Assign to Others">
                     <ng-template matTabContent>
                         <form [formGroup]="addtaskform">
@@ -36,7 +36,10 @@
                                 <div class="col-lg-6">
                                     <mat-form-field class="form-input">
                                         <mat-select placeholder="Lead/Customer Name" formControlName="LeadId">
-                                            <mat-option *ngFor="let lead of leadlist" [value]="lead.Id">
+                                            <mat-form-field class="mat-form-field-fluid">
+                                                <input matInput placeholder="Search" #searchlead (input)="searchLead(searchlead.value)" placeholder="Search" autocomplete="off">
+                                            </mat-form-field>
+                                            <mat-option *ngFor="let lead of filteredLeadList" [value]="lead.Id">
                                                 {{lead.LeadName}}
                                             </mat-option>
                                         </mat-select>
@@ -116,7 +119,10 @@
                                 <div class="col-lg-6">
                                     <mat-form-field class="form-input">
                                         <mat-select placeholder="Lead/Customer Name" formControlName="LeadId">
-                                            <mat-option *ngFor="let lead of leadlist" [value]="lead.Id">
+                                            <mat-form-field class="mat-form-field-fluid">
+                                                <input matInput placeholder="Search" #searchlead (input)="searchLead(searchlead.value)" placeholder="Search" autocomplete="off">
+                                            </mat-form-field>
+                                            <mat-option *ngFor="let lead of filteredLeadList" [value]="lead.Id">
                                                 {{lead.LeadName}}
                                             </mat-option>
                                         </mat-select>
