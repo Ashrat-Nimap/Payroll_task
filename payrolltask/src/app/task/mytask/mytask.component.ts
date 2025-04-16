@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { AddTaskDialogComponent } from '../add-task-dialog/add-task-dialog.component';
 import { MatDialog,MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-mytask',
@@ -12,6 +13,9 @@ import { Router } from '@angular/router';
 })
 export class MytaskComponent {
   Username: any
+  taskAdded: boolean = false;
+  selectedTab: number = 0;
+  tabIndex: any;
 
   constructor(
     private authService: AuthserviceService,
@@ -24,10 +28,25 @@ export class MytaskComponent {
   }
 
   opentaskdialog(){
+    const params = {
+      SelectedIndex: this.selectedTab
+    }
     const dialogRef = this.dialog.open(AddTaskDialogComponent, {
-      width: '1100px',
-      panelClass: 'dialog-container'
+      width: '1200px',
+      panelClass: 'dialog-container',
+      data: params
     });
+
+    dialogRef.afterClosed().subscribe(
+      res =>{
+
+      }
+    )
+  }
+
+  onTabChanged(tabChangeEvent: MatTabChangeEvent): void {
+    // this.searchInput.nativeElement.value = '';
+    this.tabIndex = tabChangeEvent.index;
   }
 
   signout(){

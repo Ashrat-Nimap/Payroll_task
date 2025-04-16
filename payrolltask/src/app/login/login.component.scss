@@ -1,11 +1,17 @@
+// body{
+//     overflow-x: hidden;
+// }
+
 :host ::ng-deep .mdc-text-field--filled:not(.mdc-text-field--disabled) {
     background-color: white;
     padding: 0;
-    width: 26rem;
+    width: 22rem;
 }
+
 :host ::ng-deep .mat-progress-spinner circle {
     stroke: white !important;
 }
+
 :host ::ng-deep .mat-mdc-form-field-error-wrapper {
     padding: 0 !important;
 }
@@ -22,8 +28,10 @@
     max-width: fit-content;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 4rem;
+    margin-top: 5rem;
     text-align: center;
+    // border: 1px solid black;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 .loginbtn{
     background-color: #5968de !important;

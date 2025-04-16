@@ -19,8 +19,10 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTabsModule} from '@angular/material/tabs';
 import { TaskModule } from './task/task.module';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { NumberOnlyDirective } from './directives/number-only.directive';
 import { authInterceptorInterceptor } from './Interceptor/auth-interceptor.interceptor';
+import { LoaderComponent } from './shared/loader/loader.component';
 
 
 @NgModule({
@@ -28,6 +30,7 @@ import { authInterceptorInterceptor } from './Interceptor/auth-interceptor.inter
     AppComponent,
     LoginComponent,
     NumberOnlyDirective,
+    LoaderComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,6 +50,7 @@ import { authInterceptorInterceptor } from './Interceptor/auth-interceptor.inter
     MatIconModule,
     MatToolbarModule,
     MatTabsModule,
+    MatProgressBarModule,
     TaskModule
   ],
   providers: [

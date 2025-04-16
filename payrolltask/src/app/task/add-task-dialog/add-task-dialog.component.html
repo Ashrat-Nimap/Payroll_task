@@ -3,9 +3,9 @@
     <mat-dialog-content>
         <div class="content-group">
             <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedTabChange)="tabChange()">
-                <mat-tab label="Assign to Others">
-                    <ng-template matTabContent>
-                        <form [formGroup]="addtaskform">
+                <mat-tab label="Assign to Others" >
+                    <ng-template matTabContent >
+                        <form [formGroup]="addtaskform" style="padding: 10px;">
                             <div class="row">
                                 <div class="col-lg-12 mb-3">
                                     <mat-form-field class="form-input">
@@ -15,7 +15,7 @@
                                             *ngIf="addtaskform.get('Title')?.invalid && (addtaskform.get('Title')?.touched || addtaskform.get('Title')?.dirty)">
                                             <ng-container *ngIf="addtaskform.get('Title')?.hasError('required')">Please enter the title</ng-container>
                                             <ng-container *ngIf="addtaskform.get('Title')?.hasError('pattern')">Only alphabetic characters are allowed</ng-container>
-                                        </mat-error>
+                                        </mat-error>    
                                     </mat-form-field>
                                 </div>
                                 <div class="col-lg-12 mb-3">
@@ -65,7 +65,17 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <mat-form-field class="form-input">
-                                        <mat-select placeholder="Add Users" formControlName="UserIds" multiple="">
+                                        <mat-select placeholder="Add Users" formControlName="UserIds" multiple="" (scroll)="onScroll($event)">
+                                            <mat-form-field class="mat-form-field-fluid">
+                                                <input matInput placeholder="Search" #searchmember (input)="searchMemeber(searchmember.value)" placeholder="Search" autocomplete="off">
+                                            </mat-form-field>
+                                            <mat-select-trigger>
+                                                {{
+                                                  addtaskform.get('UserIds')?.value?.length
+                                                    ? addtaskform.get('UserIds')?.value.length + ' ' + 'Users'
+                                                    : 'Add Users'
+                                                }}
+                                              </mat-select-trigger>
                                             <mat-option *ngFor="let member of memberlist" [value]="member.UserId">
                                                 {{member.Name}}
                                             </mat-option>
@@ -76,6 +86,13 @@
                                     <mat-form-field class="form-input">
                                         <mat-select placeholder="Add CC Members" formControlName="TaskOwners"
                                             multiple="">
+                                            <mat-select-trigger>
+                                            {{
+                                                addtaskform.get('TaskOwners')?.value?.length
+                                                  ? addtaskform.get('TaskOwners')?.value.length + ' ' + 'Users'
+                                                  : 'Add Users'
+                                              }}
+                                            </mat-select-trigger>
                                             <mat-option *ngFor="let owner of memberlist" [value]="owner.UserId">
                                                 {{owner.Name}}
                                             </mat-option>
@@ -88,7 +105,7 @@
                 </mat-tab>
                 <mat-tab label="Assign to Me">
                     <ng-template matTabContent>
-                        <form [formGroup]="addtaskform">
+                        <form [formGroup]="addtaskform" style="padding: 10px;">
                             <div class="row">
                                 <div class="col-lg-12 mb-3">
                                     <mat-form-field class="form-input">

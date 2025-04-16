@@ -77,8 +77,8 @@ export class TaskServiceService {
   //   return this.http.get('api/CompanyMembers?from=' +from +'&text=' +text+'&to='+to)
   // }
 
-  getMemberList() : Observable<any>{
-    return this.http.get('api/CompanyMembers')
+  getMemberList(from : any,text : any,to : any) : Observable<any>{
+    return this.http.get('api/CompanyMembers?from=' +from + '&text=' + text + '&to=' +to);
   }
 
   assignTask(taskdata: any): Observable<any> {
@@ -87,6 +87,14 @@ export class TaskServiceService {
 
   deleteTask(taskId : number) : Observable<any>{
     return this.http.get('api/Task/DeleteTask?taskId='+taskId)
+  }
+
+  acceptTask(taskId : number) : Observable<any>{
+    const params = {
+      TaskId : taskId,
+      TaskStatusValue : 0
+    }
+    return this.http.post('api/Task/UpdateTaskStatus',params)
   }
 
   archive(taskId : number,isArchive : boolean) : Observable<any>{

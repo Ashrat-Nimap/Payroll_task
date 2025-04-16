@@ -32,7 +32,13 @@
 
         <ng-container matColumnDef = "Status">
             <th mat-header-cell *matHeaderCellDef>Status</th>
-           <td mat-cell *matCellDef="let row"> {{row.TaskStatus}} </td>
+           <td mat-cell *matCellDef="let row" [ngStyle]="{'color': (row.TaskStatus === 100) ? 'green' : (row.TaskStatus === -1) ? 'red' : (row.TaskStatus === 0) ? 'orange' :(row.TaskStatus > 0 && row.TaskStatus < 100) ? 'blue': ''}">
+            <div *ngIf="row.TaskStatus === 0">Accepted</div>
+            <div *ngIf="row.TaskStatus === -1">Not Accepted</div>
+            <div *ngIf="row.TaskStatus > 0 && row.TaskStatus < 100">Partial Complete
+                ({{row.TaskStatus}}%)</div>
+            <div *ngIf="row.TaskStatus === 100">Completed</div>
+            </td>
         </ng-container>
 
         <ng-container matColumnDef = "Actions">

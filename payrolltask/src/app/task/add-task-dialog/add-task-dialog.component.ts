@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthserviceService } from '../../services/authservice.service';
 import { DatePipe } from '@angular/common';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { debug } from 'node:console';
 
 
 @Component({
@@ -25,6 +26,10 @@ export class AddTaskDialogComponent implements OnInit {
   memberlist: any;
   fileName: string = ''
   filteredLeadList: any; 
+  filterMemberList : any;
+  from = 1;
+  to = 10;
+  text = '';
   leaddata = {
     From : 1,
     To : -1,
@@ -38,12 +43,14 @@ export class AddTaskDialogComponent implements OnInit {
     private toastr: ToastrService,
     private authService: AuthserviceService,
     private datepipe: DatePipe
-  ) { }
+  ) { 
+    this.selectedIndex = data.SelectedIndex ?? 0;
+  }
 
   ngOnInit(): void {
-    this.UserId = this.authService.getUserId();
+    this.UserId = Number(this.authService.getUserId());
     this.getLeadList();
-    this.getMemberList();
+    this.getMemberList(this.from, this.text, this.to);
     this.forminit();
   }
 
@@ -57,7 +64,7 @@ export class AddTaskDialogComponent implements OnInit {
       TaskEndDateDisplay: [''],
       TaskEndDate: [''],
       Priority: [''],
-      UserIds: [[]],
+      UserIds: [[this.UserId]],
       TaskOwners: [[]]
     })
   }
@@ -71,10 +78,31 @@ export class AddTaskDialogComponent implements OnInit {
     ).subscribe();
   }
 
-  getMemberList() {
-    this.taskService.getMemberList().subscribe((memlist) => {
-      this.memberlist = memlist.data.Members
-    })
+  getMemberList(from : any,text : any,to : any) {
+    
+    this.taskService.getMemberList(from,text,to).pipe(
+      map((res : any) =>{
+        const newMembers = res.data.Members || [];
+
+      // If already have members, append the new ones
+      if (this.memberlist && this.memberlist.length) {
+        this.memberlist = [...this.memberlist, ...newMembers];
+      } else {
+        this.memberlist = newMembers;
+      }
+
+      this.filterMemberList = this.memberlist;
+      })
+    ).subscribe()
+  }
+
+  onScroll(event: any) {
+    const el = event.target;
+    if (el.scrollHeight - el.scrollTop <= el.clientHeight + 1) {
+      this.from = this.to;
+      this.to = this.to + 10;
+      this.getMemberList(this.from, this.text, this.to);
+    }
   }
 
   onFileChange(event: any) {
@@ -123,19 +151,9 @@ export class AddTaskDialogComponent implements OnInit {
    this.forminit()
   }
 
-  // leadSearch(event: Event) {
-  //   const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
-  
-  //   if (!filterValue) {
-  //     // reset to original list if search is empty
-  //     this.newlist = [...this.leadlist];
-  //     return;
-  //   }
-  
-  //   this.newlist = this.leadlist.filter((tag: any) =>
-  //     tag.TagName.toLowerCase().includes(filterValue)
-  //   );
-  // }
+  acceptTask(taskId : any){
+
+  }
 
   onSubmit() {
     if (this.addtaskform.valid) {
@@ -187,6 +205,16 @@ export class AddTaskDialogComponent implements OnInit {
       );
     } else {
       this.filteredLeadList = this.leadlist;
+    }
+  }
+
+  searchMemeber(searchText: any) {
+    if (searchText && searchText.trim() !== '') {
+      this.filterMemberList = this.memberlist.filter((member: any) =>
+        member.Name?.toString().toLowerCase().includes(searchText.toLowerCase())
+      );
+    } else {
+      this.filterMemberList = this.memberlist;
     }
   }
 }

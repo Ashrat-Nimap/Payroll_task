@@ -15,16 +15,12 @@ export class AuthserviceService {
     return this.http.post('api/Account/authenticate',{username,password})
   }
 
-  // logout() : Observable<any>{
-  //    return this.http.post('api/Account/Logout')
-  // }
-
   isLogged(){
     return (typeof window !== 'undefined' && !!sessionStorage.getItem("token") !== null);
   }
 
   getTokenByUserId() : any{
-    const token = localStorage.getItem('referraltoken'); 
+    const token = sessionStorage.getItem('referraltoken'); 
     if (!token) return null;
 
     try {

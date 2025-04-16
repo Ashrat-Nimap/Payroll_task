@@ -12,7 +12,7 @@
 <div class="add-task-btn p-2">
     <button mat-raised-button style="border-radius: 5px; color: white;background-color: #820082;" (click)="opentaskdialog()">Add Task</button>
 </div>
-<mat-tab-group>
+<mat-tab-group [(selectedIndex)]="selectedTab" (selectedTabChange)="onTabChanged($event)">
     <mat-tab label="My Task">
         <app-mytask-table></app-mytask-table>
     </mat-tab>
