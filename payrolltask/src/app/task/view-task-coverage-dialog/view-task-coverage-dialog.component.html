@@ -1,0 +1,12 @@
+<h4 mat-dialog-title>Task Coverage</h4>
+<mat-dialog-content>
+    <div class="row">
+        <div class="col-12" *ngFor="let cov of taskCov">
+            <span>{{cov.Name}}</span>
+            <span style="float: right;">{{cov.val}}%</span>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button mat-dialog-close (click)="onNoClick()">Done</button>
+</mat-dialog-actions>

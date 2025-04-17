@@ -25,6 +25,7 @@ import { DeleteEntityDialogComponent } from './delete-entity-dialog/delete-entit
 import { MatDialogContent, MatDialogActions,MatDialogTitle } from '@angular/material/dialog';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
+import { ViewTaskCoverageDialogComponent } from './view-task-coverage-dialog/view-task-coverage-dialog.component';
 
 
 const routes : Routes =[
@@ -43,6 +44,7 @@ const routes : Routes =[
     MytaskComponent,
     AddTaskDialogComponent,
     DeleteEntityDialogComponent,
+    ViewTaskCoverageDialogComponent,
   ],
   imports: [
     CommonModule,

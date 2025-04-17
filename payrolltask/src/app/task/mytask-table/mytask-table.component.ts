@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DeleteEntityDialogComponent } from '../delete-entity-dialog/delete-entity-dialog.component';
 import { map } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { ViewTaskCoverageDialogComponent } from '../view-task-coverage-dialog/view-task-coverage-dialog.component';
 
 
 @Component({
@@ -90,5 +91,44 @@ export class MytaskTableComponent implements OnInit{
       ).subscribe();
     })
   }
-  
+
+  accepttask(taskId : number){
+    this.taskService.acceptTask(taskId).pipe(
+      map(res =>{
+        if(res.Status === 200){
+          this.toastr.success("Task Accepted Successfull");
+          this.dataSource.loadTask(1,10,'',this.userId,false,'','','','','','','')
+        }
+      })
+    ).subscribe();
+  }
+
+  completeTask(taskId: number) {
+    const dialogRef = this.dialog.open(DeleteEntityDialogComponent, {
+      width: '200px',
+      data: {
+        title: 'COMPLETE TASK',
+        message: 'Are Sure want to complete this Task?'
+      }
+    })
+    dialogRef.afterClosed().subscribe(
+      res => {
+        if (!res) return
+        this.taskService.completeTask(taskId).pipe(
+          map(res => {
+            if (res.Status === 200) {
+              this.toastr.success("Task Completed")
+              this.dataSource.loadTask(1, 10, '', this.userId, false, '', '', '', '', '', '', '')
+            }
+          }
+          )
+        ).subscribe();
+      }
+    )
+  }
+
+  viewCov(taskId : number){
+    this.dialog.open(ViewTaskCoverageDialogComponent, { data : taskId , width : '400px'})
+  }
+
 }

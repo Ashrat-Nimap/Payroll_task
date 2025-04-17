@@ -7,6 +7,7 @@ import { DeleteEntityDialogComponent } from '../delete-entity-dialog/delete-enti
 import { map } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
+import { ViewTaskCoverageDialogComponent } from '../view-task-coverage-dialog/view-task-coverage-dialog.component';
 
 @Component({
   selector: 'app-cc',
@@ -88,5 +89,9 @@ export class CcComponent implements OnInit {
         })
       ).subscribe();
     })
+  }
+
+   viewCov(taskId : number){
+    this.dialog.open(ViewTaskCoverageDialogComponent, { data : taskId , width : '400px'})
   }
 }

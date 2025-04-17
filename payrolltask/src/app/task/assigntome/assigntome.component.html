@@ -49,6 +49,10 @@
                 <button mat-icon-button color="primary" (click)="archive(row.TaskId)">
                     <mat-icon>archive</mat-icon>
                 </button>
+                <button mat-icon-button color="primary" (click)="viewCov(row.TaskId)"
+                [ngStyle]="">
+                    <mat-icon>assessment</mat-icon>
+                </button>
             </td>
         </ng-container>
     

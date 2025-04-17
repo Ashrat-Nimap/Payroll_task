@@ -97,11 +97,23 @@ export class TaskServiceService {
     return this.http.post('api/Task/UpdateTaskStatus',params)
   }
 
+  completeTask(taskId : number) : Observable<any>{
+    const params = {
+      TaskId : taskId,
+      TaskStatusValue : 100
+    }
+    return this.http.post('api/Task/UpdateTaskStatus',params)
+  }
+
   archive(taskId : number,isArchive : boolean) : Observable<any>{
     const params = {
       TaskId : taskId,
       IsArchive : isArchive
     }
     return this.http.post('api/Task/Archive',params);
+  }
+
+  getTaskCoverage(taskId : number) : Observable<any>{
+    return this.http.get('api/Task/StatusReport?taskId=' +taskId);
   }
 }

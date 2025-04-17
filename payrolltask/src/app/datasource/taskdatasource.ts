@@ -27,19 +27,14 @@ export class taskdatasource extends DataSource<TaskModel> {
         (map(
             res =>{
                 this.paginatorTotal.next(res.data.TotalCount);
-                return res.data.TaskList;
+                this.tasksubject.next(res.data.TaskList);
             }
         ),
             catchError(() => of([])),
             finalize(() => {
                 this.loadingSubject.next(false);
             })
-        ).subscribe(
-            (TaskList: TaskModel[]) => {
-                console.log('Received task data:', TaskList);
-                this.tasksubject.next(TaskList);
-            }
-        );
+        ).subscribe();
 
     }
 
@@ -49,19 +44,14 @@ export class taskdatasource extends DataSource<TaskModel> {
             .pipe(map(
                 res =>{
                     this.paginatorTotal.next(res.data.TotalCount);
-                    return res.data.TaskList;
+                    this.tasksubject.next(res.data.TaskList);
                 }
             ),
                 catchError(() => of([])),
                 finalize(() => {
                     this.loadingSubject.next(false);
                 })
-            ).subscribe(
-                (TaskList: TaskModel[]) => {
-                    console.log('Received task data:', TaskList);
-                    this.tasksubject.next(TaskList);
-                }
-            )
+            ).subscribe();
     }
 
     loadAssingByMeTask(from: number, to: number, title: string, userId: any, isarchive: boolean, userIds: any, StatusIds: any, FromDate: any, ToDate: any, sortbyduedate: any) {
@@ -69,19 +59,14 @@ export class taskdatasource extends DataSource<TaskModel> {
         this.taskService.assignByMeTask(from, to, title, userId, isarchive, userIds, FromDate, ToDate, StatusIds, sortbyduedate).pipe(map(
                 res =>{
                     this.paginatorTotal.next(res.data.TotalCount);
-                    return res.data.TaskList;
+                    this.tasksubject.next(res.data.TaskList);
                 }
         ),
             catchError(() => of([])),
             finalize(() => {
                 this.loadingSubject.next(false);
             })
-        ).subscribe(
-            (TaskList: TaskModel[]) => {
-                console.log('Received task for assign data:', TaskList);
-                this.tasksubject.next(TaskList);
-            }
-        );
+        ).subscribe();
     }
 
     loadArchiveList(from : number,to : number,isarchive : boolean,title : string,userId : any,userIds : any){
@@ -90,18 +75,13 @@ export class taskdatasource extends DataSource<TaskModel> {
         .pipe(map
             ( res =>{
                 this.paginatorTotal.next(res.data.TotalCount);
-                return res.data.TaskList;
+                this.tasksubject.next(res.data.TaskList);
             }),
             catchError(() => of([])),
             finalize(() =>{
                 this.loadingSubject.next(false);
             })
-        ).subscribe(
-            (TaskList: TaskModel[]) => {
-                console.log('Received task for assign data:', TaskList);
-                this.tasksubject.next(TaskList);
-            }
-        )
+        ).subscribe();
     }
 
 }

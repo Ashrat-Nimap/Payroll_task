@@ -65,7 +65,7 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <mat-form-field class="form-input">
-                                        <mat-select placeholder="Add Users" formControlName="UserIds" multiple="" (scroll)="onScroll($event)">
+                                        <mat-select placeholder="Add Users" formControlName="UserIds" multiple="" (scroll)="onScroll($event)" (openedChange)="onSelectOpened($event)">
                                             <mat-form-field class="mat-form-field-fluid">
                                                 <input matInput placeholder="Search" #searchmember (input)="searchMemeber(searchmember.value)" placeholder="Search" autocomplete="off">
                                             </mat-form-field>

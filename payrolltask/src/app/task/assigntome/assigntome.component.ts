@@ -7,6 +7,7 @@ import { map } from 'rxjs';
 import { DeleteEntityDialogComponent } from '../delete-entity-dialog/delete-entity-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
+import { ViewTaskCoverageDialogComponent } from '../view-task-coverage-dialog/view-task-coverage-dialog.component';
 
 @Component({
   selector: 'app-assigntome',
@@ -88,6 +89,10 @@ export class AssigntomeComponent {
         })
       ).subscribe();
     })
+  }
+
+   viewCov(taskId : number){
+    this.dialog.open(ViewTaskCoverageDialogComponent, { data : taskId , width : '400px'})
   }
 
 }

@@ -61,11 +61,15 @@ export class AddTaskDialogComponent implements OnInit {
       Description: [''],
       Image: [''],
       LeadId: [''],
+      MultimediaData : [''],
+      MultimediaExtension : [''],
+      MultimediaFileName : [''],
+      MultimediaType : [''],
       TaskEndDateDisplay: [''],
       TaskEndDate: [''],
       Priority: [''],
-      UserIds: [[this.UserId]],
-      TaskOwners: [[]]
+      UserIds: [''],
+      TaskOwners: ['']
     })
   }
 
@@ -83,8 +87,6 @@ export class AddTaskDialogComponent implements OnInit {
     this.taskService.getMemberList(from,text,to).pipe(
       map((res : any) =>{
         const newMembers = res.data.Members || [];
-
-      // If already have members, append the new ones
       if (this.memberlist && this.memberlist.length) {
         this.memberlist = [...this.memberlist, ...newMembers];
       } else {
@@ -94,6 +96,17 @@ export class AddTaskDialogComponent implements OnInit {
       this.filterMemberList = this.memberlist;
       })
     ).subscribe()
+  }
+
+  onSelectOpened(opened: boolean) {
+    if (opened) {
+      setTimeout(() => {
+        const panel = document.querySelector('.mat-select-panel');
+        if (panel) {
+          panel.addEventListener('scroll', this.onScroll.bind(this));
+        }
+      }, 100);
+    }
   }
 
   onScroll(event: any) {
@@ -151,16 +164,12 @@ export class AddTaskDialogComponent implements OnInit {
    this.forminit()
   }
 
-  acceptTask(taskId : any){
-
-  }
-
   onSubmit() {
     if (this.addtaskform.valid) {
-      const controls = this.addtaskform;
-
+      const controls = this.addtaskform.controls;
+      const taskEndDate = this.addtaskform.get('TaskEndDateDisplay')?.value;
       const formattedDate = this.datepipe.transform(
-        controls.get('TaskEndDateDisplay')?.value,
+        taskEndDate,
         'd MMM yyyy hh:mm a'
       );
 
@@ -169,6 +178,7 @@ export class AddTaskDialogComponent implements OnInit {
       });
 
       if (this.selectedIndex === 0) {
+        
         this.taskService.assignTask(this.addtaskform.value).pipe(
           map((res) => {
             if (res) {
@@ -180,6 +190,7 @@ export class AddTaskDialogComponent implements OnInit {
           )
         ).subscribe();
       } else if (this.selectedIndex === 1) {
+        this.addtaskform.get('UserIds')?.setValue([this.UserId]);
         this.taskService.assignTask(this.addtaskform.value).pipe(
           map((res) => {
             if (res) {

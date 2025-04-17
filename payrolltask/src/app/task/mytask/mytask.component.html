@@ -1,29 +1,29 @@
-<mat-toolbar style="background-color: #820082;">
-    <span style="color: white;">My Task</span>
-    <span class="example-spacer"></span>
-    <span style="color: white;"  [matMenuTriggerFor]="belowMenu">{{Username}}</span>
-</mat-toolbar>
-<mat-menu #belowMenu="matMenu" yPosition="below">
-    <div class="">
-        <button mat-raised-button style="background-color: #820082;color: white;" (click)="signout()">Sign Out</button>
+    <mat-toolbar style="background-color: #820082;">
+        <span style="color: white;">My Task</span>
+        <span class="example-spacer"></span>
+        <span style="color: white;"  [matMenuTriggerFor]="belowMenu">{{Username}}</span>
+    </mat-toolbar>
+    <mat-menu #belowMenu="matMenu" yPosition="below">
+        <div class="">
+            <button mat-raised-button style="background-color: #820082;color: white;" (click)="signout()">Sign Out</button>
+        </div>
+    </mat-menu>
+    
+    <div class="add-task-btn p-2">
+        <button mat-raised-button style="border-radius: 5px; color: white;background-color: #820082;" (click)="opentaskdialog()">Add Task</button>
     </div>
-</mat-menu>
-  
-<div class="add-task-btn p-2">
-    <button mat-raised-button style="border-radius: 5px; color: white;background-color: #820082;" (click)="opentaskdialog()">Add Task</button>
-</div>
-<mat-tab-group [(selectedIndex)]="selectedTab" (selectedTabChange)="onTabChanged($event)">
-    <mat-tab label="My Task">
-        <app-mytask-table></app-mytask-table>
-    </mat-tab>
-    <mat-tab label="CC">
-        <app-cc></app-cc>
-    </mat-tab>
-    <mat-tab label="Assigned By Me">
-        <app-assigntome></app-assigntome>
-    </mat-tab>
-    <mat-tab label="Archive List">
-        <app-archivelist></app-archivelist>
-    </mat-tab>
-</mat-tab-group>
-  
+    <mat-tab-group [(selectedIndex)]="selectedTab" (selectedTabChange)="onTabChanged($event)">
+        <mat-tab label="My Task">
+            <app-mytask-table></app-mytask-table>
+        </mat-tab>
+        <mat-tab label="CC">
+            <app-cc></app-cc>
+        </mat-tab>
+        <mat-tab label="Assigned By Me">
+            <app-assigntome></app-assigntome>
+        </mat-tab>
+        <mat-tab label="Archive List">
+            <app-archivelist></app-archivelist>
+        </mat-tab>
+    </mat-tab-group>
+    
