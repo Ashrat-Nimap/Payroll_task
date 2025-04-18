@@ -44,9 +44,9 @@ export class MytaskComponent {
     )
   }
 
-  onTabChanged(tabChangeEvent: MatTabChangeEvent): void {
+  onTabChanged(event: any): void {
     // this.searchInput.nativeElement.value = '';
-    this.tabIndex = tabChangeEvent.index;
+    this.selectedTab = event.index;
   }
 
   signout(){

@@ -116,4 +116,8 @@ export class TaskServiceService {
   getTaskCoverage(taskId : number) : Observable<any>{
     return this.http.get('api/Task/StatusReport?taskId=' +taskId);
   }
+
+  updateTask(taskdetails : any) : Observable<any> {
+    return this.http.post('api/Task/UpdateTaskDetails',taskdetails)
+  }
 }

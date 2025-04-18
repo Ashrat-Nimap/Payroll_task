@@ -14,16 +14,24 @@
     </div>
     <mat-tab-group [(selectedIndex)]="selectedTab" (selectedTabChange)="onTabChanged($event)">
         <mat-tab label="My Task">
-            <app-mytask-table></app-mytask-table>
+            <ng-template matTabContent>
+              <app-mytask-table></app-mytask-table>
+            </ng-template>
         </mat-tab>
         <mat-tab label="CC">
-            <app-cc></app-cc>
+            <ng-template matTabContent>
+              <app-cc></app-cc>
+            </ng-template>
         </mat-tab>
         <mat-tab label="Assigned By Me">
-            <app-assigntome></app-assigntome>
+            <ng-template matTabContent>
+              <app-assigntome></app-assigntome>
+            </ng-template>
         </mat-tab>
         <mat-tab label="Archive List">
-            <app-archivelist></app-archivelist>
+            <ng-template matTabContent>
+              <app-archivelist></app-archivelist>
+            </ng-template>
         </mat-tab>
     </mat-tab-group>
     

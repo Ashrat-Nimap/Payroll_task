@@ -1,5 +1,5 @@
 <div class="">
-        <h4 mat-dialog-title>Add Task</h4>
+        <h4 mat-dialog-title>{{ data?.action === 'edit' ? 'Edit Task' : 'Add Task' }}</h4>
     <mat-dialog-content>
         <div class="content-group">
             <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedTabChange)="tabChange()">
@@ -28,10 +28,16 @@
                                 <div class="col-lg-12 mb-3">
                                     <mat-form-field class="form-input">
                                         <mat-label>Attach File</mat-label>
-                                        <input matInput formControlName="Image" (click)="triggerFileInput($event)"
-                                            [value]="fileName">
-                                        <input type="file" id="fileInput" (change)="onFileChange($event)" hidden>
+                                        <div class="d-flex">
+                                            <input class="pointer" matInput [value]="displayfilename"
+                                            (click)="triggerFileSelect()" readonly />
+                                            <input type="text"  formControlName="Image" hidden />
+                                            <span class="remove-value" style="float: right; color: red;" *ngIf="displayfilename" (click)="removeFile()">
+                                                Remove
+                                            </span>
+                                        </div>
                                     </mat-form-field>
+                                    <input #imageFileInput type="file" (change)="triggerFileSelect($event)" hidden />
                                 </div>
                                 <div class="col-lg-6">
                                     <mat-form-field class="form-input">
@@ -93,7 +99,7 @@
                                                   : 'Add Users'
                                               }}
                                             </mat-select-trigger>
-                                            <mat-option *ngFor="let owner of memberlist" [value]="owner.UserId">
+                                            <mat-option *ngFor="let owner of memberlist" [value]="owner">
                                                 {{owner.Name}}
                                             </mat-option>
                                         </mat-select>
@@ -127,11 +133,16 @@
                                 <div class="col-lg-12 mb-3">
                                     <mat-form-field class="form-input">
                                         <mat-label>Attach File</mat-label>
-                                        <input matInput formControlName="Image" (click)="triggerFileInput($event)"
-                                            [value]="fileName">
-                                        <input type="file" accept=".jpeg .jpg" id="fileInput"
-                                            (change)="onFileChange($event)" hidden>
+                                        <div class="d-flex">
+                                            <input class="pointer" matInput [value]="displayfilename"
+                                            (click)="triggerFileSelect()" readonly />
+                                            <input type="text"  formControlName="Image" hidden />
+                                            <span class="remove-value" style="float: right; color: red;" *ngIf="displayfilename" (click)="removeFile()">
+                                                Remove
+                                            </span>
+                                        </div>
                                     </mat-form-field>
+                                    <input #imageFileInput type="file" (change)="triggerFileSelect($event)" hidden />
                                 </div>
                                 <div class="col-lg-6">
                                     <mat-form-field class="form-input">
@@ -167,7 +178,14 @@
                                     <mat-form-field class="form-input">
                                         <mat-select placeholder="Add CC Members" formControlName="TaskOwners"
                                             multiple="">
-                                            <mat-option *ngFor="let owner of memberlist" [value]="owner.UserId">
+                                            <mat-select-trigger>
+                                                {{
+                                                    addtaskform.get('TaskOwners')?.value?.length
+                                                      ? addtaskform.get('TaskOwners')?.value.length + ' ' + 'Users'
+                                                      : 'Add Users'
+                                                  }}
+                                                </mat-select-trigger>
+                                            <mat-option *ngFor="let owner of memberlist" [value]="owner">
                                                 {{owner.Name}}
                                             </mat-option>
                                         </mat-select>
@@ -184,7 +202,7 @@
     <mat-dialog-actions>
             <button mat-raised-button color="primary" style="border-radius: 5px;" (click)="onNoClick()">Close</button>
             <button mat-raised-button style="background-color: #820082;color: white;border-radius: 5px;"
-                (click)="onSubmit()">Add</button>
+                (click)="onSubmit()">{{ data?.action === 'edit' ? 'Update Task' : 'Add Task' }}</button>
     </mat-dialog-actions>
 
 </div>

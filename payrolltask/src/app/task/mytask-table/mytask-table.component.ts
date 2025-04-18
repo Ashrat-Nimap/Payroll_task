@@ -9,6 +9,7 @@ import { DeleteEntityDialogComponent } from '../delete-entity-dialog/delete-enti
 import { map } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { ViewTaskCoverageDialogComponent } from '../view-task-coverage-dialog/view-task-coverage-dialog.component';
+import { AddTaskDialogComponent } from '../add-task-dialog/add-task-dialog.component';
 
 
 @Component({
@@ -125,6 +126,17 @@ export class MytaskTableComponent implements OnInit{
         ).subscribe();
       }
     )
+  }
+
+  editTask(task: any){
+    this.dialog.open(AddTaskDialogComponent, {
+      width: '1200px',
+      data: {
+        action: 'edit',        
+        task: task,    
+        SelectedIndex: 1
+      }
+    });
   }
 
   viewCov(taskId : number){

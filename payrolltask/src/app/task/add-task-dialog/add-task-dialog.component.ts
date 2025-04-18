@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TaskServiceService } from '../../services/task-service.service';
@@ -17,6 +17,7 @@ import { debug } from 'node:console';
   providers: [DatePipe]
 })
 export class AddTaskDialogComponent implements OnInit {
+  @ViewChild('imageFileInput') imageFileInput!: ElementRef<HTMLInputElement>;
   addtaskform: any = FormGroup
   selectedIndex: number = 0;
   UserId!: any;
@@ -27,6 +28,9 @@ export class AddTaskDialogComponent implements OnInit {
   fileName: string = ''
   filteredLeadList: any; 
   filterMemberList : any;
+  displayfilename : string = '';
+  imageName : string = '';
+  imageExt : string = '';
   from = 1;
   to = 10;
   text = '';
@@ -52,11 +56,16 @@ export class AddTaskDialogComponent implements OnInit {
     this.getLeadList();
     this.getMemberList(this.from, this.text, this.to);
     this.forminit();
+    if (this.data?.action === 'edit' && this.data.task) {
+      this.patchFormValue(this.data.task);
+    }
   }
 
   forminit() {
     this.addtaskform = this.fb.group({
       AssignedBy: [this.UserId],
+      AssignedToUserId: [''],
+      AssignedDate: [''],
       Title: ['', [Validators.required, Validators.pattern("^[a-z A-Z]+$")]],
       Description: [''],
       Image: [''],
@@ -65,14 +74,35 @@ export class AddTaskDialogComponent implements OnInit {
       MultimediaExtension : [''],
       MultimediaFileName : [''],
       MultimediaType : [''],
-      TaskEndDateDisplay: [''],
-      TaskEndDate: [''],
+      TaskEndDateDisplay: ['',Validators.required],
+      TaskEndDate: ['',Validators.required],
       Priority: [''],
       UserIds: [''],
       TaskOwners: ['']
     })
   }
 
+  patchFormValue(task: any){
+    this.addtaskform.patchValue({
+      AssignedBy: task.AssignedBy || this.UserId,
+      Title: task.Title,
+      Description: task.Description,
+      Image: task.Image,
+      LeadId: task.LeadId,
+      MultimediaData: task.MultimediaData,
+      MultimediaExtension: task.MultimediaExtension,
+      MultimediaFileName: task.MultimediaFileName,
+      MultimediaType: task.MultimediaType,
+      TaskEndDateDisplay: task.TaskEndDateDisplay || new Date(task.TaskEndDate),
+      TaskEndDate: task.TaskEndDate,
+      Priority: task.Priority,
+      UserIds: task.AssignedToUserIds,
+      TaskOwners: task.TaskOwnerIds,
+    });
+  
+    this.fileName = task.Image || '';
+    this.selectedIndex = this.data.SelectedIndex || 0;
+  }
   getLeadList() {
     this.taskService.getLead(this.leaddata).pipe(
       map((res : any) => {
@@ -118,89 +148,157 @@ export class AddTaskDialogComponent implements OnInit {
     }
   }
 
-  onFileChange(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      this.fileName = file.name
-      reader.onload = (e: any) => {
-        const image = new Image();
-        image.src = e.target.result;
 
-        image.onload = () => {
+  triggerFileSelect(event?: Event): void {
+    if (!event) {
+      this.imageFileInput.nativeElement.click();
+      return;
+    }
+
+    const input = event.target as HTMLInputElement;
+    if (input.files?.length) {
+      const file = input.files[0];
+      if (file.size < 2000000) {
+        this.displayfilename = file.name;
+        this.imageName = file.name.split('\\').pop()?.split('/').pop() ?? '';
+        const extMatch = this.imageName.split('.').pop();
+        this.imageExt = extMatch ?? '';
+        this.imageName = this.imageName.replace(`.${this.imageExt}`, '');
+
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          const base64String = btoa(e.target.result);
           this.addtaskform.patchValue({
-            Image: this.fileName,
+            Image: base64String,
+            MultimediaData: base64String,
+            MultimediaExtension: this.imageExt,
+            MultimediaFileName: this.imageName,
+            MultimediaType: file.type,
           });
-          // if (image.width <= 310 && image.height <= 325) {
-          //   this.imageError = ''; 
-
-
-          //   this.previewImage = e.target.result; 
-          // } else {
-          //   this.imageError = 'Image must be between 310 and 325 pixels only';
-          //   this.registrationform.patchValue({
-          //     image: null,
-          //   });
-          //   this.previewImage = null; 
-          // }
         };
-      };
-
-      reader.readAsDataURL(file);
-    } else {
-      console.log('No file selected');
+        reader.readAsBinaryString(file);
+      } else {
+        this.toastr.error('File size is greater than 2MB');
+      }
     }
   }
 
-  triggerFileInput(event: MouseEvent) {
-    event.preventDefault();
-    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
-    if (fileInput) {
-      fileInput.click();
-    }
+  removeFile(): void {
+    this.imageFileInput.nativeElement.value = '';
+    this.displayfilename = '';
+
+    this.addtaskform.patchValue({
+      Image: '',
+      MultimediaData: '',
+      MultimediaExtension: '',
+      MultimediaFileName: '',
+      MultimediaType: '',
+    });
   }
+  
+  // triggerFileInput(event: MouseEvent) {
+  //   event.preventDefault();
+  //   const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+  //   if (fileInput) {
+  //     fileInput.click();
+  //   }
+  // }
 
   tabChange() {
    this.forminit()
   }
 
+  // onSubmit() {
+  //   if (this.addtaskform.valid) {
+  //     const controls = this.addtaskform.controls;
+  //     const taskEndDate = this.addtaskform.get('TaskEndDateDisplay')?.value;
+  //     const formattedDate = this.datepipe.transform(
+  //       taskEndDate,
+  //       'd MMM yyyy hh:mm a'
+  //     );
+
+  //     this.addtaskform.patchValue({
+  //       TaskEndDate: formattedDate
+  //     });
+
+  //     if (this.selectedIndex === 0) {
+        
+  //       this.taskService.assignTask(this.addtaskform.value).pipe(
+  //         map((res) => {
+  //           if (res) {
+  //             this.toastr.success("Task Added SuccessFully");
+  //           } else {
+  //             this.toastr.error("Something Went Wrong");
+  //           }
+  //         }
+  //         )
+  //       ).subscribe();
+  //     } else if (this.selectedIndex === 1) {
+  //       this.addtaskform.get('UserIds')?.setValue([this.UserId]);
+  //       this.taskService.assignTask(this.addtaskform.value).pipe(
+  //         map((res) => {
+  //           if (res) {
+  //             this.toastr.success("Task Added SuccessFully");
+  //           } else {
+  //             this.toastr.error("Something Went Wrong");
+  //           }
+  //         }
+  //         )
+  //       ).subscribe();
+  //     }
+  //   }
+  // }
+
   onSubmit() {
     if (this.addtaskform.valid) {
-      const controls = this.addtaskform.controls;
       const taskEndDate = this.addtaskform.get('TaskEndDateDisplay')?.value;
-      const formattedDate = this.datepipe.transform(
-        taskEndDate,
-        'd MMM yyyy hh:mm a'
-      );
-
-      this.addtaskform.patchValue({
-        TaskEndDate: formattedDate
-      });
-
-      if (this.selectedIndex === 0) {
-        
-        this.taskService.assignTask(this.addtaskform.value).pipe(
+      const formattedDate = this.datepipe.transform(taskEndDate, 'd MMM yyyy hh:mm a');
+  
+      this.addtaskform.patchValue({ TaskEndDate: formattedDate });
+  
+      // Check for Edit
+      if (this.data?.action === 'edit' && this.data.task?.TaskId) {
+        const updatedTask = {
+          TaskId: this.data.task.TaskId,
+          ...this.addtaskform.value
+        };
+  
+        this.taskService.updateTask(updatedTask).pipe(
           map((res) => {
             if (res) {
-              this.toastr.success("Task Added SuccessFully");
+              this.toastr.success("Task Updated Successfully");
+              this.dialogRef.close(true);
             } else {
-              this.toastr.error("Something Went Wrong");
+              this.toastr.error("Update Failed");
             }
-          }
-          )
+          })
         ).subscribe();
-      } else if (this.selectedIndex === 1) {
-        this.addtaskform.get('UserIds')?.setValue([this.UserId]);
-        this.taskService.assignTask(this.addtaskform.value).pipe(
-          map((res) => {
-            if (res) {
-              this.toastr.success("Task Added SuccessFully");
-            } else {
-              this.toastr.error("Something Went Wrong");
-            }
-          }
-          )
-        ).subscribe();
+      } else {
+        // ADD NEW
+        if (this.selectedIndex === 0) {
+          this.taskService.assignTask(this.addtaskform.value).pipe(
+            map((res) => {
+              if (res) {
+                this.toastr.success("Task Added Successfully");
+                this.dialogRef.close(true);
+              } else {
+                this.toastr.error("Add Failed");
+              }
+            })
+          ).subscribe();
+        } else if (this.selectedIndex === 1) {
+          this.addtaskform.get('UserIds')?.setValue([this.UserId]);
+          this.taskService.assignTask(this.addtaskform.value).pipe(
+            map((res) => {
+              if (res) {
+                this.toastr.success("Task Added Successfully");
+                this.dialogRef.close(true);
+              } else {
+                this.toastr.error("Add Failed");
+              }
+            })
+          ).subscribe();
+        }
       }
     }
   }
