@@ -3,7 +3,7 @@
     <mat-dialog-content>
         <div class="content-group">
             <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedTabChange)="tabChange()">
-                <mat-tab label="Assign to Others" >
+                <mat-tab label="Assign to Others" [disabled]="tabdisable && data.action !== 'Add'">
                     <ng-template matTabContent >
                         <form [formGroup]="addtaskform" style="padding: 10px;">
                             <div class="row">
@@ -109,7 +109,7 @@
                         </form>
                     </ng-template>
                 </mat-tab>
-                <mat-tab label="Assign to Me">
+                <mat-tab label="Assign to Me" [disabled]="!tabdisable && data.action !== 'Add'">
                     <ng-template matTabContent>
                         <form [formGroup]="addtaskform" style="padding: 10px;">
                             <div class="row">

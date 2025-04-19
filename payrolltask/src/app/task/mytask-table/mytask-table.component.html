@@ -2,7 +2,7 @@
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
         <ng-container matColumnDef = "Title">
             <th mat-header-cell *matHeaderCellDef>Title</th>
-           <td mat-cell *matCellDef="let row" (click)="editTask(row)"> {{row.Title}} </td>
+           <td mat-cell *matCellDef="let row" (click)="editTask(row.TaskId)" style="color:blue;cursor: pointer;"> {{row.Title}} </td>
         </ng-container>
     
         <ng-container matColumnDef = "Customer Name">

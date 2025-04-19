@@ -128,15 +128,23 @@ export class MytaskTableComponent implements OnInit{
     )
   }
 
-  editTask(task: any){
-    this.dialog.open(AddTaskDialogComponent, {
+  editTask(taskId: any){
+    debugger
+    const dialogref = this.dialog.open(AddTaskDialogComponent, {
       width: '1200px',
       data: {
         action: 'edit',        
-        task: task,    
-        SelectedIndex: 1
+        UserId: taskId,    
       }
     });
+
+    dialogref.afterClosed().subscribe(
+      res =>{
+        if(!res) return;
+        this.toastr.success("Task Updated Successfull")
+        this.dataSource.loadTask(1, 10, '', this.userId, false, '', '', '', '', '', '', '')
+      }
+    )
   }
 
   viewCov(taskId : number){

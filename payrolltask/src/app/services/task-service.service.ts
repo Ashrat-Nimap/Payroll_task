@@ -120,4 +120,8 @@ export class TaskServiceService {
   updateTask(taskdetails : any) : Observable<any> {
     return this.http.post('api/Task/UpdateTaskDetails',taskdetails)
   }
+
+  getTaskDetails(taskId : number) : Observable<any>{
+    return this.http.get('api/Task/UserTaskDetails?taskId=' + taskId)
+  }
 }
