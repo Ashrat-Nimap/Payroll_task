@@ -68,7 +68,7 @@ const routes : Routes =[
     MatDialogTitle,
     RouterModule.forChild(routes)
   ],
-  providers : [provideNativeDateAdapter()],
+  providers : [],
   exports: [RouterModule]
 })
 export class TaskModule { }

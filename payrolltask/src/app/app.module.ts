@@ -23,6 +23,8 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { NumberOnlyDirective } from './directives/number-only.directive';
 import { authInterceptorInterceptor } from './Interceptor/auth-interceptor.interceptor';
 import { LoaderComponent } from './shared/loader/loader.component';
+import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
+import { CUSTOM_DATE_FORMATS, CustomDateAdaptor } from './dateadaptor/dateAdaptor';
 
 
 @NgModule({
@@ -57,6 +59,8 @@ import { LoaderComponent } from './shared/loader/loader.component';
     provideClientHydration(),
     provideAnimationsAsync(),
     provideHttpClient(withFetch(),withInterceptors([authInterceptorInterceptor])),
+    { provide: DateAdapter,useClass: CustomDateAdaptor},
+    {provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS}
   ],
   bootstrap: [AppComponent]
 })

@@ -8,6 +8,7 @@ import { DeleteEntityDialogComponent } from '../delete-entity-dialog/delete-enti
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { ViewTaskCoverageDialogComponent } from '../view-task-coverage-dialog/view-task-coverage-dialog.component';
+import { AddTaskDialogComponent } from '../add-task-dialog/add-task-dialog.component';
 
 @Component({
   selector: 'app-assigntome',
@@ -36,14 +37,13 @@ export class AssigntomeComponent {
       this.dataSource.loadTask(
         from,
         to,
-        '',               // title
-        this.userId,      // userId
-        false,            // isArchive
+        '',              
+        this.userId,      
+        false,            
         '', '', '', '', '', '', ''
       );
     });
 
-    // Link paginator total count
     this.dataSource.paginatorCount$.subscribe(total => {
       this.paginator.length = total;
     });
@@ -94,5 +94,34 @@ export class AssigntomeComponent {
    viewCov(taskId : number){
     this.dialog.open(ViewTaskCoverageDialogComponent, { data : taskId , width : '400px'})
   }
+
+  editTask(taskId: any) {
+      this.taskService.getTaskDetails(taskId).subscribe(res => {
+        const taskDetails = res.data;
+        const currentUserId = Number(this.authService.getUserId());
+        const userData = taskDetails.AssignedToUserIds;
+  
+        const selectedIndex = (!userData.includes(currentUserId) || userData.length > 1) ? 0 : 1;
+        const tabDisable = !(userData.length > 1) && userData.includes(currentUserId) ? true : false;
+        const dialogref = this.dialog.open(AddTaskDialogComponent, {
+          width: '1200px',
+          data: {
+            action: 'edit',
+            UserId: taskId,
+            taskDetails,
+            selectedIndex,
+            tabDisable
+          }
+        });
+  
+        dialogref.afterClosed().subscribe(
+          res => {
+            if (!res) return;
+            this.toastr.success("Task Updated Successfull")
+            this.dataSource.loadAssingByMeTask(1, 10, '', '', false, [], '', '', '', '')
+          }
+        )
+      });
+    };
 
 }
