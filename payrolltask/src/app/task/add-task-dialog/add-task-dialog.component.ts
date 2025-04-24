@@ -2,7 +2,7 @@ import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TaskServiceService } from '../../services/task-service.service';
-import { map } from 'rxjs';
+import { catchError, forkJoin, map, of, switchMap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { AuthserviceService } from '../../services/authservice.service';
 import { DatePipe } from '@angular/common';
@@ -52,6 +52,7 @@ export class AddTaskDialogComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.UserId = this.authService.getUserId();
     this.forminit();
     this.getLeadList();
     this.getMemberList(this.from, this.text, this.to);
@@ -207,14 +208,17 @@ export class AddTaskDialogComponent implements OnInit {
   }
 
   onSubmit() {
+    if(this.addtaskform.invalid){
+      this.addtaskform.markAllAsTouched();
+      return
+    }
     if (this.addtaskform.valid) {
       const controls = this.addtaskform.controls;
       const taskEndDate = this.addtaskform.get('TaskEndDateDisplay')?.value;
       const formattedDate = this.datepipe.transform(taskEndDate, 'd MMM yyyy hh:mm a');
       const userIds = this.addtaskform.get('UserIds')?.value;
       this.addtaskform.patchValue({ TaskEndDate: formattedDate });
-
-      // controls['TaskOwners'].setValue(this.taskdetailslist.TaskOwners);
+      const owners = this.addtaskform.get('TaskOwners')?.value;
       const ext = this.imageExt?.toLowerCase();
       const multimediaTypeControl = this.addtaskform.get('MultimediaType');
 
@@ -228,23 +232,8 @@ export class AddTaskDialogComponent implements OnInit {
         }
       }
       if (this.data?.action === 'edit' && this.taskdetailslist?.TaskId) {
-        const updatedTask = {
-          TaskId: this.taskdetailslist.TaskId,
-          UserIds: userIds,
-          ...this.addtaskform.value
-        };
-
-        this.taskService.updateTask(updatedTask).pipe(
-          map((res) => {
-            if (res) {
-              this.dialogRef.close(true);
-            } else {
-              this.toastr.error("Update Failed");
-            }
-          })
-        ).subscribe();
+        
       } else {
-        // ADD NEW
         const ext = this.imageExt?.toLowerCase();
         const multimediaTypeControl = this.addtaskform.get('MultimediaType');
 

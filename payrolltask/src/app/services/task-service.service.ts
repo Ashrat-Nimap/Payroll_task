@@ -73,10 +73,6 @@ export class TaskServiceService {
     return this.http.post('api/CRM/Leads',params)
   }
 
-  // getMemberList(from:any, to:any, text:any) : Observable<any>{
-  //   return this.http.get('api/CompanyMembers?from=' +from +'&text=' +text+'&to='+to)
-  // }
-
   getMemberList(from : any,text : any,to : any) : Observable<any>{
     return this.http.get('api/CompanyMembers?from=' +from + '&text=' + text + '&to=' +to);
   }
@@ -123,5 +119,17 @@ export class TaskServiceService {
 
   getTaskDetails(taskId : number) : Observable<any>{
     return this.http.get('api/Task/UserTaskDetails?taskId=' + taskId)
+  }
+
+  updateOwnerList(params : any): Observable<any> {
+    return this.http.post('api/Task/AddOwnersToTask', params)
+  }
+
+  removeOwnerTask(taskId:number, taskOwners:any): Observable<any> {
+    const params = {
+      Id: taskId,
+      TaskOwners: taskOwners,
+    }
+    return this.http.post('api/Task/RemoveOwnersFromExistingTask', params)
   }
 }

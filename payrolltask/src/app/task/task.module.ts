@@ -26,6 +26,7 @@ import { MatDialogContent, MatDialogActions,MatDialogTitle } from '@angular/mate
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ViewTaskCoverageDialogComponent } from './view-task-coverage-dialog/view-task-coverage-dialog.component';
+import { AddMemberDialogComponent } from './add-member-dialog/add-member-dialog.component';
 
 
 const routes : Routes =[
@@ -45,6 +46,7 @@ const routes : Routes =[
     AddTaskDialogComponent,
     DeleteEntityDialogComponent,
     ViewTaskCoverageDialogComponent,
+    AddMemberDialogComponent,
   ],
   imports: [
     CommonModule,

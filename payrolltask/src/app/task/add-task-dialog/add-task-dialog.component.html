@@ -32,7 +32,7 @@
                                             <input class="pointer" matInput [value]="displayfilename"
                                             (click)="triggerFileSelect()" readonly />
                                             <input type="text"  formControlName="Image" hidden />
-                                            <span class="remove-value" style="float: right; color: red;" *ngIf="displayfilename" (click)="removeFile()">
+                                            <span class="remove-value" style="float: right; color: red;cursor: pointer;" *ngIf="displayfilename" (click)="removeFile()">
                                                 Remove
                                             </span>
                                         </div>
