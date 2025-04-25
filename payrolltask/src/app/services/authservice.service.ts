@@ -32,7 +32,7 @@ export class AuthserviceService {
     }
   }
 
-  getUserId() : string | null{
+  getUserId() : number | null{
     const token = this.getTokenByUserId();
     return token?.UserId ?? null;
   }

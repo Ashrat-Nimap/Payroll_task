@@ -1,7 +1,7 @@
     <mat-toolbar style="background-color: #820082;">
         <span style="color: white;">My Task</span>
         <span class="example-spacer"></span>
-        <span style="color: white;"  [matMenuTriggerFor]="belowMenu">{{Username}}</span>
+        <span style="color: white; cursor: pointer;"  [matMenuTriggerFor]="belowMenu" >{{Username}}</span>
     </mat-toolbar>
     <mat-menu #belowMenu="matMenu" yPosition="below">
         <div class="">

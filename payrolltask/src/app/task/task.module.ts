@@ -27,6 +27,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ViewTaskCoverageDialogComponent } from './view-task-coverage-dialog/view-task-coverage-dialog.component';
 import { AddMemberDialogComponent } from './add-member-dialog/add-member-dialog.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 
 const routes : Routes =[
@@ -68,6 +69,7 @@ const routes : Routes =[
     MatDialogContent,
     MatDialogActions,
     MatDialogTitle,
+    MatProgressSpinnerModule,
     RouterModule.forChild(routes)
   ],
   providers : [],

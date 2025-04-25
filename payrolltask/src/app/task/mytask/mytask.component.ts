@@ -29,7 +29,7 @@ export class MytaskComponent {
 
   opentaskdialog(){
     const params = {
-      action : 'Add',
+      Action : 'Add',
       SelectedIndex: this.selectedTab
     }
     const dialogRef = this.dialog.open(AddTaskDialogComponent, {

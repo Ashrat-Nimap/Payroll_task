@@ -1,11 +1,11 @@
 <div class="">
-        <h4 mat-dialog-title>{{ data?.action === 'edit' ? 'Edit Task' : 'Add Task' }}</h4>
+        <h4 mat-dialog-title>{{ data?.Action === 'edit' ? 'Edit Task' : 'Add Task' }}</h4>
     <mat-dialog-content>
         <div class="content-group">
             <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedTabChange)="tabChange()">
-                <mat-tab label="Assign to Others" [disabled]="tabdisable && data.action !== 'Add'">
+                <mat-tab label="Assign to Others" [disabled]="tabdisable && data.Action !== 'Add'">
                     <ng-template matTabContent >
-                        <form [formGroup]="addtaskform" style="padding: 10px;">
+                        <form [formGroup]="addtaskform" style="padding: 10px; overflow-x: hidden;">
                             <div class="row">
                                 <div class="col-lg-12 mb-3">
                                     <mat-form-field class="form-input">
@@ -32,7 +32,7 @@
                                             <input class="pointer" matInput [value]="displayfilename"
                                             (click)="triggerFileSelect()" readonly />
                                             <input type="text"  formControlName="Image" hidden />
-                                            <span class="remove-value" style="float: right; color: red;cursor: pointer;" *ngIf="displayfilename" (click)="removeFile()">
+                                            <span class="remove-value" *ngIf="displayfilename" (click)="removeFile()">
                                                 Remove
                                             </span>
                                         </div>
@@ -52,7 +52,7 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-lg-6">
-                                    <mat-form-field>
+                                    <mat-form-field style="width: 100%;">
                                         <mat-label>Select Due Date</mat-label>
                                         <input matInput [matDatepicker]="picker" formControlName="TaskEndDateDisplay"
                                             [min]="currentDate">
@@ -72,50 +72,38 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <mat-form-field class="form-input">
-                                        <mat-select placeholder="Add Users" formControlName="UserIds" multiple=""  [compareWith]="compareUsers">
-                                            <mat-select-trigger>
-                                                {{
-                                                  addtaskform.get('UserIds')?.value?.length
-                                                    ? addtaskform.get('UserIds')?.value.length + ' ' + 'Users'
-                                                    : 'Add Users'
-                                                }}
-                                            </mat-select-trigger>
-                                                <mat-form-field class="mat-form-field-fluid">
-                                                  <input matInput placeholder="Search" #searchmember (input)="searchMemeber(searchmember.value)" autocomplete="off">
-                                                </mat-form-field>
-                                            <mat-option *ngFor="let member of filterMemberList" [value]="member.UserId">
-                                                {{member.Name}}
-                                            </mat-option>
-                                        </mat-select>
+                                        <div class="d-flex">
+                                            <input matInput placeholder="Add Users" class="userBlock" formControlName="UserDisplayIds" readonly
+                                                (click)="openMembers('UserIds')" />
+                                                <input matInput formControlName="UserIds" hidden />
+                                                <span class="remove-value" (click)="removeOwners('User')"
+                                                *ngIf="data.Action === 'edit' && assignedToCount >= 1">Remove
+                                            </span>
+                                        </div>
+                                        <mat-error>Users is
+                                            <strong>required</strong>
+                                        </mat-error>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-lg-6">
                                     <mat-form-field class="form-input">
-                                        <mat-select placeholder="Add CC Members" formControlName="TaskOwners"
-                                            multiple="" [compareWith]="compareUsers">
-                                            <mat-select-trigger>
-                                            {{
-                                                addtaskform.get('TaskOwners')?.value?.length
-                                                  ? addtaskform.get('TaskOwners')?.value.length + ' ' + 'Users'
-                                                  : 'Add Users'
-                                              }}
-                                            </mat-select-trigger>
-                                            <mat-form-field class="mat-form-field-fluid">
-                                                <input matInput placeholder="Search" #searchmember (input)="searchMemeber(searchmember.value)" autocomplete="off">
-                                              </mat-form-field>
-                                            <mat-option *ngFor="let owner of filterMemberList" [value]="owner">
-                                                {{owner.Name}}
-                                            </mat-option>
-                                        </mat-select>
+                                        <div class="d-flex">
+                                            <input matInput placeholder="Add CC Members" class="userBlock" formControlName="TaskDisplayOwners" readonly
+                                                (click)="openMembers('TaskOwners')" />
+                                            <input matInput formControlName="TaskOwners" hidden />
+                                            <span class="remove-value" (click)="removeOwners('Owner')"
+                                                *ngIf="data.Action === 'edit' && taskOwnerCount >= 1">Remove
+                                            </span>
+                                        </div>
                                     </mat-form-field>
                                 </div>
                             </div>
                         </form>
                     </ng-template>
                 </mat-tab>
-                <mat-tab label="Assign to Me" [disabled]="!tabdisable && data.action !== 'Add'">
+                <mat-tab label="Assign to Me" [disabled]="!tabdisable && data.Action !== 'Add'">
                     <ng-template matTabContent>
-                        <form [formGroup]="addtaskform" style="padding: 10px;">
+                        <form [formGroup]="addtaskform" style="padding: 10px; overflow-x: hidden;">
                             <div class="row">
                                 <div class="col-lg-12 mb-3">
                                     <mat-form-field class="form-input">
@@ -161,7 +149,7 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-lg-6">
-                                    <mat-form-field>
+                                    <mat-form-field style="width: 100%;">
                                         <mat-label>Select Due Date</mat-label>
                                         <input matInput [matDatepicker]="picker" formControlName="TaskEndDateDisplay"
                                             [min]="currentDate">
@@ -180,22 +168,14 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <mat-form-field class="form-input">
-                                        <mat-select placeholder="Add CC Members" formControlName="TaskOwners"
-                                            multiple="" [compareWith]="compareUsers">
-                                            <mat-select-trigger>
-                                                {{
-                                                    addtaskform.get('TaskOwners')?.value?.length
-                                                      ? addtaskform.get('TaskOwners')?.value.length + ' ' + 'Users'
-                                                      : 'Add Users'
-                                                  }}
-                                                </mat-select-trigger>
-                                                <mat-form-field class="mat-form-field-fluid">
-                                                    <input matInput placeholder="Search" #searchmember (input)="searchMemeber(searchmember.value)" autocomplete="off">
-                                                </mat-form-field>
-                                            <mat-option *ngFor="let owner of filterMemberList" [value]="owner">
-                                                {{owner.Name}}
-                                            </mat-option>
-                                        </mat-select>
+                                        <div class="d-flex">
+                                            <input matInput placeholder="Add CC Members" class="userBlock" formControlName="TaskDisplayOwners" readonly
+                                                (click)="openMembers('TaskOwners')" />
+                                            <input matInput formControlName="TaskOwners" hidden />
+                                            <span class="remove-value" (click)="removeOwners('Owner')"
+                                                *ngIf="data.Action === 'edit' && taskOwnerCount >= 1">Remove
+                                            </span>
+                                        </div>
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -209,7 +189,7 @@
     <mat-dialog-actions>
             <button mat-raised-button color="primary" style="border-radius: 5px;" (click)="onNoClick()">Close</button>
             <button mat-raised-button style="background-color: #820082;color: white;border-radius: 5px;"
-                (click)="onSubmit()">{{ data?.action === 'edit' ? 'Update Task' : 'Add Task' }}</button>
+                (click)="onSubmit()">{{ data?.Action === 'edit' ? 'Update Task' : 'Add Task' }}</button>
     </mat-dialog-actions>
 
 </div>

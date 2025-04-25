@@ -49,9 +49,9 @@ export class AddMemberDialogComponent {
     }
   }
 
-  getMembersList(from: number, to: number, search: string): void {
+  getMembersList(from: number,to: number,search: string): void {
     this.viewLoading = true;
-    this.taskService.getMemberList(from, to, search)
+    this.taskService.getMemberList(from,to,search)
       .pipe(
         takeUntil(this.destroy$),
         map(res => res.data)
@@ -110,7 +110,7 @@ export class AddMemberDialogComponent {
     if (this.showRemoveUser) {
       const removeFn = this.data.Action === 'Owner'
         ? this.taskService.removeOwnerTask(this.data.taskId, this.removeUserList)
-        : this.taskService.removeOwnerTask(this.data.taskId, this.removeUserList);
+        : this.taskService.removeUsersExistingTask(this.data.taskId, this.removeUserList);
 
       removeFn.pipe(takeUntil(this.destroy$)).subscribe(res => {
         if (res.Status === 200) this.dialogRef.close({ isEdit: true });

@@ -140,7 +140,7 @@ export class MytaskTableComponent implements OnInit {
       const dialogref = this.dialog.open(AddTaskDialogComponent, {
         width: '1200px',
         data: {
-          action: 'edit',
+          Action: 'edit',
           UserId: taskId,
           taskDetails,
           selectedIndex,

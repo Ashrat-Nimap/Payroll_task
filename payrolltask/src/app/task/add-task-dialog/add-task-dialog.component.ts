@@ -1,11 +1,12 @@
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { TaskServiceService } from '../../services/task-service.service';
 import { catchError, forkJoin, map, of, switchMap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { AuthserviceService } from '../../services/authservice.service';
 import { DatePipe } from '@angular/common';
+import { AddMemberDialogComponent } from '../add-member-dialog/add-member-dialog.component';
 
 
 
@@ -22,7 +23,14 @@ export class AddTaskDialogComponent implements OnInit {
   UserId!: any;
   currentDate = new Date()
   leadlist: any;
-  newlist: any = []
+  newlist: any = [];
+  taskOwners: any = [];
+  userIds: any = [];
+  memberLength: number = 0;
+  userLength: number = 0;
+  taskOwnerCount: number = 0;
+  assignedToCount: number = 0;
+  userDetails: any;
   memberlist: any;
   indexOfTab: any;
   taskdetailslist: any;
@@ -45,6 +53,7 @@ export class AddTaskDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<AddTaskDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
+    private dialog: MatDialog,
     private taskService: TaskServiceService,
     private toastr: ToastrService,
     private authService: AuthserviceService,
@@ -52,11 +61,10 @@ export class AddTaskDialogComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.UserId = this.authService.getUserId();
+    this.UserId = Number(this.authService.getUserId());
     this.forminit();
     this.getLeadList();
-    this.getMemberList(this.from, this.text, this.to);
-    if (this.data.action !== 'Add') {
+    if (this.data.Action !== 'Add') {
       this.patchFormValue();
     }
   }
@@ -77,9 +85,11 @@ export class AddTaskDialogComponent implements OnInit {
       MultimediaType: [''],
       TaskEndDateDisplay: ['',Validators.required],
       TaskEndDate: [''],
+      UserDisplayIds: [''],
       Priority: [''],
       UserIds: [[]],
-      TaskOwners: [[]]
+      TaskOwners: [[]],
+      TaskDisplayOwners: [''],
     })
   }
 
@@ -94,8 +104,18 @@ export class AddTaskDialogComponent implements OnInit {
     controls['TaskEndDateDisplay'].setValue(
       new Date(this.taskdetailslist.TaskEndDate).toISOString()
     )
-    controls['TaskOwners'].setValue(this.taskdetailslist.TaskOwners);
-    controls['UserIds'].setValue(this.taskdetailslist.AssignedToUserIds || []);
+    this.taskOwners = this.taskdetailslist.TaskOwnerIds || [];
+    this.taskOwnerCount = this.taskdetailslist.TaskOwnerCount || 0;
+    this.userIds = this.taskdetailslist.AssignedToUserIds || [];
+    this.assignedToCount = this.taskdetailslist.AssignedToUserCount || 0;
+
+    controls['TaskDisplayOwners'].setValue(
+      this.taskOwnerCount > 1 ? `${this.taskOwnerCount} Users` : `${this.taskOwnerCount} User`
+    )
+
+    controls['UserDisplayIds'].setValue(
+      this.assignedToCount > 1 ? `${this.assignedToCount} Users` : `${this.assignedToCount} User`
+    )
 
     this.imageName = /[^/]*$/.exec(this.taskdetailslist.MultimediaName)?.[0] || '';
     this.imageExt = /[^.]*$/.exec(this.taskdetailslist.MultimediaName)?.[0] || '';
@@ -121,40 +141,6 @@ export class AddTaskDialogComponent implements OnInit {
       })
     ).subscribe();
   }
-
-  getMemberList(from: any, text: any, to: any) {
-    this.taskService.getMemberList(from, text, to).pipe(
-      map((res: any) => {
-        this.memberlist = res.data.Members;
-        this.filterMemberList = this.memberlist;
-      })
-    ).subscribe()
-  }
-
-  onSelectOpened(opened: boolean) {
-    if (opened) {
-      setTimeout(() => {
-        const panel = document.querySelector('.mat-select-panel');
-        if (panel) {
-          panel.addEventListener('scroll', this.onScroll.bind(this));
-        }
-      }, 100);
-    }
-  }
-
-  compareUsers = (a: any, b: any): boolean => {
-    return a?.UserId === b?.UserId;
-  };
-  
-  onScroll(event: any) {
-    const el = event.target;
-    if (el.scrollHeight - el.scrollTop <= el.clientHeight + 1) {
-      this.from = this.to;
-      this.to = this.to + 10;
-      this.getMemberList(this.from, this.text, this.to);
-    }
-  }
-
 
   triggerFileSelect(event?: Event): void {
     if (!event) {
@@ -216,9 +202,7 @@ export class AddTaskDialogComponent implements OnInit {
       const controls = this.addtaskform.controls;
       const taskEndDate = this.addtaskform.get('TaskEndDateDisplay')?.value;
       const formattedDate = this.datepipe.transform(taskEndDate, 'd MMM yyyy hh:mm a');
-      const userIds = this.addtaskform.get('UserIds')?.value;
       this.addtaskform.patchValue({ TaskEndDate: formattedDate });
-      const owners = this.addtaskform.get('TaskOwners')?.value;
       const ext = this.imageExt?.toLowerCase();
       const multimediaTypeControl = this.addtaskform.get('MultimediaType');
 
@@ -231,9 +215,29 @@ export class AddTaskDialogComponent implements OnInit {
           multimediaTypeControl.setValue('');
         }
       }
-      if (this.data?.action === 'edit' && this.taskdetailslist?.TaskId) {
+      if (this.data?.Action === 'edit') {
+        controls['TaskOwners'].setValue(this.taskOwners);
+        if(this.selectedIndex === 1){
+          controls['UserDisplayIds'].disable();
+          this.userIds = [];
+          this.userIds.push(this.data.UserId);
+          controls['UserIds'].setValue(this.userIds);
+        }
+
+        if (this.selectedIndex === 0) {
+          controls['UserDisplayIds'].updateValueAndValidity();
+          controls['UserDisplayIds'].setValue(this.userIds);
+        }
+        this.taskService.updateTask(this.addtaskform.value).pipe(
+          map(res => {
+            if (res.Status === 200) {
+              this.dialogRef.close({res, isEdit: false})
+            }
+          })
+        ).subscribe();
         
       } else {
+        controls['TaskOwners'].setValue(this.taskOwners);
         const ext = this.imageExt?.toLowerCase();
         const multimediaTypeControl = this.addtaskform.get('MultimediaType');
 
@@ -247,6 +251,7 @@ export class AddTaskDialogComponent implements OnInit {
           }
         }
         if (this.selectedIndex === 0) {
+          controls['UserIds'].setValue(this.userIds)
           this.taskService.assignTask(this.addtaskform.value).pipe(
             map((res) => {
               if (res) {
@@ -288,15 +293,91 @@ export class AddTaskDialogComponent implements OnInit {
     }
   }
 
-  searchMemeber(searchText: string): void {
-    const query = (searchText || '').trim().toLowerCase();
-    
-    if (query) {
-      this.filterMemberList = this.memberlist.filter((member: any) =>
-        member.Name?.toLowerCase().includes(query)
-      );
-    } else {
-      this.filterMemberList = [...this.memberlist];
+  openMembers(controlName: any): void {
+    const controls = this.addtaskform.controls;
+  
+    const isUserIds = controlName === 'UserIds';
+    const formControl = isUserIds ? controls.UserDisplayIds : controls.TaskDisplayOwners;
+  
+    if (isUserIds) {
+      formControl.clearValidators();
+      formControl.updateValueAndValidity();
     }
+  
+    const params = {
+      usersIds: isUserIds ? this.userIds : this.taskOwners,
+      controlname: isUserIds ? 'UserIds' : 'TaskOwner',
+      Action: this.data.Action,
+    };
+  
+    const dialogRef = this.dialog.open(AddMemberDialogComponent, {
+      data: params,
+      width: '400px',
+    });
+  
+    dialogRef.afterClosed().subscribe((res) => {
+      if (!res) return;
+  
+      const selectedMembers = res.members || [];
+  
+      if (isUserIds) {
+        this.userIds = selectedMembers
+          .filter((m: any) => !this.userIds.includes(m.UserId))
+          .map((m: any) => m.UserId);
+        this.assignedToCount = this.userIds.length;
+        this.userLength = this.userIds.length;
+        formControl.setValue(`${this.userLength} User${this.userLength > 1 ? 's' : ''}`);
+  
+        if (this.data.Action === 'edit') {
+          this.taskService.addUsersExistingTask(this.data.UserId, this.userIds)
+            .pipe(map((res) => {
+              if (res.Status === 200) {
+                this.toastr.success('User Updated Successfully');
+              }
+            }))
+            .subscribe();
+        }
+  
+      } else {
+        this.taskOwners = selectedMembers.filter((owner: any) => !this.taskOwners.includes(owner));
+        this.taskOwnerCount = this.taskOwners.length;
+        this.memberLength = this.taskOwners.length;
+        formControl.setValue(`${this.memberLength} User${this.memberLength > 1 ? 's' : ''}`);
+  
+        if (this.data.Action === 'edit') {
+          this.taskService.updateOwnerList(this.data.UserId, this.taskOwners)
+            .pipe(map((res) => {
+              if (res.Status === 200) {
+                this.taskOwners = res.data.TaskOwnerIds;
+                // this.dialogRef.close();
+                this.toastr.success('User Updated Successfully');
+              }
+            }))
+            .subscribe();
+        }
+      }
+    });
   }
+
+  removeOwners(user: string): void {
+    const isOwner = user === 'Owner';
+  
+    const params = {
+      usersData: isOwner ? this.taskOwners : this.userIds,
+      taskId: this.data.UserId,
+      Action: isOwner ? 'Owner' : 'User',
+    };
+  
+    const dialogRef = this.dialog.open(AddMemberDialogComponent, {
+      data: params,
+      width: '400px',
+    });
+  
+    dialogRef.afterClosed().subscribe((res) => {
+      if (!res) return;
+      this.toastr.success('User Updated Successfully');
+      this.ngOnInit();
+    });
+  }
+  
 }
