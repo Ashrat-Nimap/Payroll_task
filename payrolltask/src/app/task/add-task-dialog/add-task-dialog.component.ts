@@ -321,10 +321,14 @@ export class AddTaskDialogComponent implements OnInit {
       const selectedMembers = res.members || [];
   
       if (isUserIds) {
-        this.userIds = selectedMembers
-          .filter((m: any) => !this.userIds.includes(m.UserId))
-          .map((m: any) => m.UserId);
-        this.assignedToCount = this.userIds.length;
+        this.userIds = [];
+        this.assignedToCount = 0;
+        selectedMembers.forEach((result: any) => {
+          if (!this.userIds.includes(result.UserId)) {
+            this.userIds.push(result.UserId);
+            this.assignedToCount += 1;
+          }
+        });
         this.userLength = this.userIds.length;
         formControl.setValue(`${this.userLength} User${this.userLength > 1 ? 's' : ''}`);
   
@@ -339,8 +343,14 @@ export class AddTaskDialogComponent implements OnInit {
         }
   
       } else {
-        this.taskOwners = selectedMembers.filter((owner: any) => !this.taskOwners.includes(owner));
-        this.taskOwnerCount = this.taskOwners.length;
+        this.taskOwners = [];
+        this.taskOwnerCount = 0;
+        selectedMembers.forEach((result: any) => {
+          if (!this.taskOwners.includes(result)) {
+            this.taskOwnerCount += 1;
+            this.taskOwners.push(result);
+          }
+        });
         this.memberLength = this.taskOwners.length;
         formControl.setValue(`${this.memberLength} User${this.memberLength > 1 ? 's' : ''}`);
   
@@ -349,7 +359,6 @@ export class AddTaskDialogComponent implements OnInit {
             .pipe(map((res) => {
               if (res.Status === 200) {
                 this.taskOwners = res.data.TaskOwnerIds;
-                // this.dialogRef.close();
                 this.toastr.success('User Updated Successfully');
               }
             }))
@@ -375,6 +384,23 @@ export class AddTaskDialogComponent implements OnInit {
   
     dialogRef.afterClosed().subscribe((res) => {
       if (!res) return;
+      this.taskService.getTaskDetails(this.data.UserId).subscribe(
+        (res : any) =>{
+          if(isOwner){
+            this.taskOwners = res.data.TaskOwnerIds || [];
+            this.taskOwnerCount = this.taskOwners.length;
+            this.addtaskform.controls['TaskDisplayOwners'].setValue(
+              this.taskOwnerCount > 1 ? `${this.taskOwnerCount} Users` : `${this.taskOwnerCount} User`
+            )
+          } else {
+            this.userIds = res.data.AssignedToUserIds || [];
+            this.assignedToCount = this.userIds.length;
+            this.addtaskform.controls['UserDisplayIds'].setValue(
+              this.assignedToCount > 1 ? `${this.assignedToCount} Users` : `${this.assignedToCount} User`
+            )
+          }
+        }
+      )
       this.toastr.success('User Updated Successfully');
       this.ngOnInit();
     });

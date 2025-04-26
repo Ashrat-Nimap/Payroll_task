@@ -40,13 +40,13 @@ export class MytaskComponent {
 
     dialogRef.afterClosed().subscribe(
       res =>{
-        
+        if(!res) return;
+        this.selectedTab = 0;
       }
     )
   }
 
   onTabChanged(event: any): void {
-    // this.searchInput.nativeElement.value = '';
     this.selectedTab = event.index;
   }
 

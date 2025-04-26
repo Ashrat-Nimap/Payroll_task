@@ -33,17 +33,10 @@ export class CcComponent implements OnInit {
       const from = (this.paginator.pageIndex * this.paginator.pageSize) + 1;
       const to = (this.paginator.pageIndex + 1) * this.paginator.pageSize;
 
-      this.dataSource.loadCC(
-        from,
-        to,
-        '',               // title
-        '',      // userId
-        '',            // isArchive
-        '', '', '',
+      this.dataSource.loadCC(from,to,'','','','', '', '',
       );
     });
 
-    // Link paginator total count
     this.dataSource.paginatorCount$.subscribe(total => {
       this.paginator.length = total;
     });
